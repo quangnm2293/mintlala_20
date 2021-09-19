@@ -7,12 +7,13 @@ import { imageUpload } from '../../utils/ImageUpload';
 class MyComponent extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { editorHtml: '' };
+		this.state = { editorHtml: '', body: this.props.body };
 		this.handleChange = this.handleChange.bind(this);
+		console.log(this.props.body);
 	}
 
 	handleChange(html) {
-		this.setState({ editorHtml: html });
+		this.setState({ editorHtml: html, body: html });
 		this.props.setContent(this.state.editorHtml);
 	}
 
@@ -56,6 +57,7 @@ class MyComponent extends React.Component {
 						this.quill = el;
 					}}
 					onChange={this.handleChange}
+					value={this.state.body ? this.state.body : this.props.body}
 					placeholder='Mô tả chi tiết...'
 					modules={{
 						toolbar: {

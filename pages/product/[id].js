@@ -56,7 +56,7 @@ function ProductDetail() {
 	return (
 		<div className='bg-gray-100'>
 			<Head>
-				<title>{product.title} - MINT Lala</title>
+				<title>MINT Lala - Chi tiết sản phẩm</title>
 			</Head>
 
 			<Header />

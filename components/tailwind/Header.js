@@ -17,9 +17,9 @@ function Header() {
 
 	const [search, setSearch] = useState('');
 
-	if (process.browser && router.pathname === '/') {
+	if (process.browser) {
 		document.addEventListener('keyup', e => {
-			if (e.code === 'Enter') {
+			if (e.code === 'Enter' && router.pathname === '/') {
 				document.getElementById('searchBtn').click();
 			}
 		});

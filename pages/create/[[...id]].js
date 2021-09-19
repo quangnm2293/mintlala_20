@@ -9,6 +9,8 @@ import { imageUpload } from '../../utils/ImageUpload';
 import { useRouter } from 'next/router';
 import ReactQuill from '../../components/editor/ReactQuill';
 import Header from '../../components/tailwind/Header';
+import { XIcon } from '@heroicons/react/outline';
+import { Switch } from '@headlessui/react';
 
 function ProductsManager() {
 	const router = useRouter();
@@ -30,6 +32,8 @@ function ProductsManager() {
 	const [images, setImages] = useState([]);
 	const [onEdit, setOnEdit] = useState(false);
 	const [content, setContent] = useState('');
+	const [body, setBody] = useState('');
+	const [enabled, setEnabled] = useState(false);
 
 	const { state, dispatch } = useContext(DataContext);
 	const { categories, auth } = state;
@@ -44,6 +48,7 @@ function ProductsManager() {
 					await axios.get(`/api/product/${id}`).then(res => {
 						if (res.data.err) return;
 						setProduct(res.data.product);
+						setBody(res.data.product.content);
 						setImages(res.data.product.images);
 						setContent(res.data.product.content);
 					});
@@ -144,6 +149,8 @@ function ProductsManager() {
 
 			setProduct(initialState);
 			setImages([]);
+
+			router.push('/product');
 		} catch (err) {
 			dispatch({ type: 'NOTIFY', payload: { error: err.message } });
 		}
@@ -152,56 +159,59 @@ function ProductsManager() {
 	if (!user || user.role !== 'admin') return null;
 
 	return (
-		<div className=''>
+		<div className='bg-gray-100'>
 			<Head>
 				<title>Quản lý sản phẩm</title>
 			</Head>
 
 			<Header />
 
-			<form className='row' onSubmit={handleSubmit}>
-				<div className='col-md-12'>
-					<div className='input-group my-4'>
-						<div className='custom-file border rounded'>
-							<input
-								type='file'
-								className='custom-file-input'
-								onChange={handleUploadFile}
-								multiple
-								accept='image/*'
-								style={{ cursor: 'pointer' }}
-							/>
-						</div>
+			<form className='max-w-screen-2xl mx-auto my-4 flex flex-col bg-white p-5' onSubmit={handleSubmit}>
+				<div className=''>
+					<div className='my-4'>
+						<label
+							htmlFor='file_upload_images'
+							className='button-green rounded-md p-3 px-10 cursor-pointer'
+						>
+							Tải ảnh
+						</label>
 
-						<div className='input-group-prepend'>
-							<span className='input-group-text'>Tải ảnh</span>
-						</div>
+						<input
+							type='file'
+							className='opacity-0'
+							id='file_upload_images'
+							onChange={handleUploadFile}
+							multiple
+							accept='image/*'
+							style={{ cursor: 'pointer' }}
+						/>
 					</div>
 
-					<div className='row img-up pl-4'>
+					<div className='flex space-x-2 flex-wrap'>
 						{images.map((img, index) => (
-							<div key={index} className='file_img'>
+							<div key={index} className='w-1/6 lg:w-1/12 relative'>
 								<img
 									src={img.url ? img.url : URL.createObjectURL(img)}
 									alt='Ảnh mô tả'
-									className='img-thumbnail rounded'
+									className='rounded'
 								/>
-
-								<span onClick={() => handleRemove(index)}>X</span>
+								<XIcon
+									className='h-5 absolute top-1 right-1 cursor-pointer'
+									onClick={() => handleRemove(index)}
+								/>
 							</div>
-							// eslint-disable-next-line no-mixed-spaces-and-tabs
 						))}
 					</div>
 				</div>
 
-				<div className='col-md-12'>
-					<div className='input-group-prepend my-4'>
+				<div className='flex flex-col space-y-5'>
+					<div className='my-4'>
 						<select
 							name='category'
 							id='category'
 							value={category}
 							onChange={e => handleChangeInput(e)}
-							className='custom-select text-capitalize'
+							className='capitalize border border-gray-300 p-4 rounded-md w-[320px]'
 						>
 							<option value='all'>-- Danh mục --</option>
 							{categories.map(category => (
@@ -222,12 +232,8 @@ function ProductsManager() {
 						disabled
 					/>
 
-					<div className='my-2'>
-						<label
-							htmlFor='title'
-							style={{ transform: 'translateY(5px)' }}
-							className='text-info'
-						>
+					<div className='flex flex-col space-y-2 my-2'>
+						<label htmlFor='title' className='text-blue-400 text-sm'>
 							Tên sản phẩm
 						</label>
 						<input
@@ -236,18 +242,14 @@ function ProductsManager() {
 							id='title'
 							value={title}
 							placeholder='Tên sản phẩm'
-							className='w-100 d-block p-2'
+							className='p-4 border border-gray-300 rounded-md'
 							onChange={e => handleChangeInput(e)}
 						/>
 					</div>
 
-					<div className='row'>
-						<div className='col-md-6'>
-							<label
-								className='text-info'
-								htmlFor='priceOrigin'
-								style={{ transform: 'translateY(5px)' }}
-							>
+					<div className='flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-10 my-2'>
+						<div className='flex flex-col space-y-2 my-2'>
+							<label className='text-blue-400 text-sm' htmlFor='priceOrigin'>
 								Giá gốc
 							</label>
 							<input
@@ -256,16 +258,13 @@ function ProductsManager() {
 								id='priceOrigin'
 								value={priceOrigin === 0 ? '' : priceOrigin}
 								placeholder='Giá gốc'
-								className='w-100 d-block p-2'
+								className='p-4 border border-gray-300 rounded-md'
 								onChange={e => handleChangeInput(e)}
 							/>
 						</div>
-						<div className='col-md-6'>
-							<label
-								className='text-info'
-								htmlFor='priceSale'
-								style={{ transform: 'translateY(5px)' }}
-							>
+
+						<div className='flex flex-col space-y-2 my-2'>
+							<label className='text-blue-400 text-sm' htmlFor='priceSale'>
 								Giá khuyến mãi
 							</label>
 							<input
@@ -274,17 +273,13 @@ function ProductsManager() {
 								id='priceSale'
 								value={priceSale === 0 ? '' : priceSale}
 								placeholder='Giá sale'
-								className='w-100 d-block p-2'
+								className='p-4 border border-gray-300 rounded-md'
 								onChange={e => handleChangeInput(e)}
 							/>
 						</div>
 					</div>
-					<div className='my-2'>
-						<label
-							className='text-info'
-							htmlFor='inStock'
-							style={{ transform: 'translateY(5px)' }}
-						>
+					<div className='flex flex-col space-y-2 my-2'>
+						<label className='text-blue-400 text-sm' htmlFor='inStock'>
 							Kho
 						</label>
 						<input
@@ -292,17 +287,36 @@ function ProductsManager() {
 							name='inStock'
 							value={inStock === 0 ? '' : inStock}
 							placeholder='Kho'
-							className='w-100 d-block p-2'
+							className='p-4 border border-gray-300 rounded-md'
 							onChange={e => handleChangeInput(e)}
 							id='inStock'
 						/>
 					</div>
-					<div>
-						<label
-							className='text-info'
-							htmlFor='description'
-							style={{ transform: 'translateY(5px)' }}
+
+					{/* Phan loai */}
+					<div className='flex flex-col space-y-2 my-2'>
+						<p className='text-blue-400 text-sm'>Phân loại</p>
+
+						<Switch
+							checked={enabled}
+							onChange={setEnabled}
+							className={`${enabled ? 'bg-green-400' : 'bg-gray-700'}
+         									 relative inline-flex flex-shrink-0 h-[19px] w-[38px] border-2 rounded-full
+	    									 cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2
+										focus-visible:ring-white focus-visible:ring-opacity-75`}
 						>
+							<span className='sr-only'>Màu sắc</span>
+							<span
+								aria-hidden='true'
+								className={`${enabled ? 'translate-x-6' : 'translate-x-0'}
+           								pointer-events-none inline-block h-[15px] w-[15px] rounded-full bg-gray-300 shadow-lg transform ring-0 
+									transition ease-in-out duration-200`}
+							/>
+						</Switch>
+					</div>
+
+					<div className='flex flex-col space-y-2 my-2'>
+						<label className='text-blue-400 text-sm' htmlFor='description'>
 							Mô tả ngắn
 						</label>
 						<textarea
@@ -310,18 +324,22 @@ function ProductsManager() {
 							id='description'
 							rows='4'
 							value={description}
-							className='w-100'
+							className='p-4 border border-gray-300 rounded-md'
 							onChange={e => handleChangeInput(e)}
 							placeholder='Mô tả sản phẩm ngắn gọn.'
 						></textarea>
 					</div>
 
-					<div className='text-editor' style={{ minHeight: '500px' }}>
-						<ReactQuill setContent={setContent} content={content ? content : product.content} />
+					<div className='text-editor'>
+						<ReactQuill setContent={setContent} body={body} />
 					</div>
 				</div>
 
-				<button type='submit' className='btn btn-info mt-2 py-2 ml-3 mb-4' style={{ minWidth: 200 }}>
+				<button
+					type='submit'
+					className='button p-4 text-xl text-gray-700 font-semibold my-4 max-w-[320px]'
+					style={{ minWidth: 200 }}
+				>
 					{onEdit ? 'Cập nhật sản phẩm' : 'Đăng sản phẩm'}
 				</button>
 			</form>
