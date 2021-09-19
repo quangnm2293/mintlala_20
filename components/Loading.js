@@ -2,7 +2,7 @@
 const Loading = () => {
 	return (
 		<div
-			className={`fixed w-full h-full left-0 bottom-0 flex flex-col space-y-3 justify-center items-center bg-[#0008]`}
+			className={`fixed w-full h-full left-0 bottom-0 flex flex-col space-y-3 justify-center items-center bg-[#0008] z-[299]`}
 		>
 			<img src='/images/Rolling-1s-200px1.svg' alt='svg' className='h-16 text-white' />
 

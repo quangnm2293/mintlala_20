@@ -297,22 +297,26 @@ function ProductsManager() {
 					<div className='flex flex-col space-y-2 my-2'>
 						<p className='text-blue-400 text-sm'>Phân loại</p>
 
-						<Switch
-							checked={enabled}
-							onChange={setEnabled}
-							className={`${enabled ? 'bg-green-400' : 'bg-gray-700'}
+						<div>
+							<Switch
+								checked={enabled}
+								onChange={setEnabled}
+								className={`${enabled ? 'bg-green-400' : 'bg-gray-700'}
          									 relative inline-flex flex-shrink-0 h-[19px] w-[38px] border-2 rounded-full
 	    									 cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2
 										focus-visible:ring-white focus-visible:ring-opacity-75`}
-						>
-							<span className='sr-only'>Màu sắc</span>
-							<span
-								aria-hidden='true'
-								className={`${enabled ? 'translate-x-6' : 'translate-x-0'}
+							>
+								<span className='sr-only'>Màu sắc</span>
+								<span
+									aria-hidden='true'
+									className={`${enabled ? 'translate-x-6' : 'translate-x-0'}
            								pointer-events-none inline-block h-[15px] w-[15px] rounded-full bg-gray-300 shadow-lg transform ring-0 
 									transition ease-in-out duration-200`}
-							/>
-						</Switch>
+								/>
+							</Switch>
+
+							<p>Màu sắc</p>
+						</div>
 					</div>
 
 					<div className='flex flex-col space-y-2 my-2'>
