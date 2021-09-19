@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+      .link {
+              @apply cursor-pointer
+      }
+      .button {
+            @apply text-xs md:text-sm p-2 bg-gradient-to-t from-yellow-400 to-yellow-200 border-yellow-300 rounded-sm 
+            focus:outline-none focus:ring-2 focus:ring-yellow-500 active:from-yellow-500 w-full
+      }
+      .button-gray {
+            @apply text-xs md:text-sm p-2 bg-gradient-to-t from-gray-400 to-gray-200 border-gray-300 rounded-sm 
+            focus:outline-none focus:ring-2 focus:ring-gray-500 active:from-gray-500 w-full
+      }
+      .button-green {
+            @apply text-xs md:text-sm p-2 bg-gradient-to-t from-green-400 to-green-200 border-green-300 rounded-sm 
+            focus:outline-none focus:ring-2 focus:ring-green-500 active:from-green-500 w-full
+      }
+      .button-red {
+            @apply text-xs md:text-sm p-2 bg-gradient-to-t from-red-500 to-red-200 border-red-300 rounded-sm 
+            focus:outline-none focus:ring-2 focus:ring-red-500 active:from-red-500 w-full
+      }
+      .button-blue {
+            @apply text-xs md:text-sm p-2 bg-gradient-to-t from-blue-500 to-blue-200 border-blue-300 rounded-sm 
+            focus:outline-none focus:ring-2 focus:ring-blue-500 active:from-blue-500 w-full
+      }
+}
