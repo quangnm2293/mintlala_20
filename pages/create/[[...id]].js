@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import React, { useContext, useEffect, useState } from 'react';
@@ -34,6 +35,41 @@ function ProductsManager() {
 	const [content, setContent] = useState('');
 	const [body, setBody] = useState('');
 	const [enabled, setEnabled] = useState(false);
+	const [sizes, setSizes] = useState([
+		{ name: 'freeSize', isActive: false, quantity: 0 },
+		{ name: 'sizeXs', isActive: false, quantity: 0 },
+		{ name: 'sizeS', isActive: false, quantity: 0 },
+		{ name: 'sizeM', isActive: false, quantity: 0 },
+		{ name: 'sizeL', isActive: false, quantity: 0 },
+		{ name: 'sizeXl', isActive: false, quantity: 0 },
+	]);
+	const [colors, setColors] = useState([
+		{
+			name: 'red',
+			isActive: false,
+			sizes: [],
+		},
+		{
+			name: 'white',
+			isActive: false,
+			sizes: [],
+		},
+		{
+			name: 'black',
+			isActive: false,
+			sizes: [],
+		},
+		{
+			name: 'green',
+			isActive: false,
+			sizes: [],
+		},
+		{
+			name: 'blue',
+			isActive: false,
+			sizes: [],
+		},
+	]);
 
 	const { state, dispatch } = useContext(DataContext);
 	const { categories, auth } = state;
@@ -64,6 +100,8 @@ function ProductsManager() {
 
 		getProductEdit();
 	}, [id]);
+
+	useEffect(() => {}, [enabled]);
 
 	const handleChangeInput = e => {
 		const { value, name } = e.target;
@@ -154,6 +192,56 @@ function ProductsManager() {
 		} catch (err) {
 			dispatch({ type: 'NOTIFY', payload: { error: err.message } });
 		}
+	};
+
+	const handleChangeColors = e => {
+		const { name, checked } = e.target;
+
+		const newData = [...colors];
+		newData.map(color => {
+			if (color.name === name) {
+				color.isActive = checked;
+			}
+		});
+
+		setColors(newData);
+	};
+	const handleChangeSizes = e => {
+		const { name, checked } = e.target;
+
+		const newData = [...sizes];
+		newData.map(size => {
+			if (size.name === name) {
+				size.isActive = checked;
+			}
+		});
+		const activeSizes = newData.filter(size => size.isActive);
+
+		const newColors = [...colors];
+		newColors.map(color => {
+			if (color.isActive) {
+				color.sizes = activeSizes;
+			}
+		});
+		setSizes(newData);
+		setColors(newColors);
+	};
+
+	const handleChangeInStock = (e, colorV, sizeV) => {
+		const newColors = [...colors];
+
+		newColors.map(color => {
+			if (color.name === colorV) {
+				color.sizes.map(size => {
+					if (size.name === sizeV) {
+						size.quantity = Number(e.target.value);
+						console.log(color);
+					}
+				});
+			}
+		});
+
+		console.log(newColors);
 	};
 
 	if (!user || user.role !== 'admin') return null;
@@ -247,7 +335,7 @@ function ProductsManager() {
 						/>
 					</div>
 
-					<div className='flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-10 my-2'>
+					<div className='flex lg:items-center flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-10 my-2'>
 						<div className='flex flex-col space-y-2 my-2'>
 							<label className='text-blue-400 text-sm' htmlFor='priceOrigin'>
 								Giá gốc
@@ -278,45 +366,244 @@ function ProductsManager() {
 							/>
 						</div>
 					</div>
-					<div className='flex flex-col space-y-2 my-2'>
-						<label className='text-blue-400 text-sm' htmlFor='inStock'>
-							Kho
-						</label>
-						<input
-							type='nuumber'
-							name='inStock'
-							value={inStock === 0 ? '' : inStock}
-							placeholder='Kho'
-							className='p-4 border border-gray-300 rounded-md'
-							onChange={e => handleChangeInput(e)}
-							id='inStock'
-						/>
-					</div>
 
 					{/* Phan loai */}
 					<div className='flex flex-col space-y-2 my-2'>
 						<p className='text-blue-400 text-sm'>Phân loại</p>
 
-						<div>
-							<Switch
-								checked={enabled}
-								onChange={setEnabled}
-								className={`${enabled ? 'bg-green-400' : 'bg-gray-700'}
+						<div className='grid lg:grid-cols-2'>
+							<div className='flex flex-col space-y-3'>
+								<div className='flex items-center space-x-3'>
+									<Switch
+										checked={enabled}
+										onChange={setEnabled}
+										className={`${enabled ? 'bg-green-400' : 'bg-gray-700'}
          									 relative inline-flex flex-shrink-0 h-[19px] w-[38px] border-2 rounded-full
 	    									 cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2
 										focus-visible:ring-white focus-visible:ring-opacity-75`}
-							>
-								<span className='sr-only'>Màu sắc</span>
-								<span
-									aria-hidden='true'
-									className={`${enabled ? 'translate-x-6' : 'translate-x-0'}
+									>
+										<span className='sr-only'>Màu sắc</span>
+										<span
+											aria-hidden='true'
+											className={`${
+												enabled ? 'translate-x-6' : 'translate-x-0'
+											}
            								pointer-events-none inline-block h-[15px] w-[15px] rounded-full bg-gray-300 shadow-lg transform ring-0 
 									transition ease-in-out duration-200`}
-								/>
-							</Switch>
+										/>
+									</Switch>
 
-							<p>Màu sắc</p>
+									<p>Màu sắc</p>
+								</div>
+
+								<div>
+									<div className='flex items-center space-x-2'>
+										<input
+											type='checkbox'
+											name='red'
+											id='red'
+											className='w-5 h-5'
+											disabled={!enabled}
+											checked={colors[0].isActive}
+											onChange={handleChangeColors}
+										/>
+										<label className='cursor-pointer' htmlFor='red'>
+											Đỏ
+										</label>
+									</div>
+
+									<div className='flex items-center space-x-2'>
+										<input
+											type='checkbox'
+											name='white'
+											id='white'
+											className='w-5 h-5'
+											disabled={!enabled}
+											checked={colors[1].isActive}
+											onChange={handleChangeColors}
+										/>
+										<label className='cursor-pointer' htmlFor='white'>
+											Trắng
+										</label>
+									</div>
+									<div className='flex items-center space-x-2'>
+										<input
+											type='checkbox'
+											name='black'
+											id='black'
+											className='w-5 h-5'
+											disabled={!enabled}
+											checked={colors[2].isActive}
+											onChange={handleChangeColors}
+										/>
+										<label className='cursor-pointer' htmlFor='black'>
+											Đen
+										</label>
+									</div>
+									<div className='flex items-center space-x-2'>
+										<input
+											type='checkbox'
+											name='green'
+											id='green'
+											className='w-5 h-5'
+											disabled={!enabled}
+											checked={colors[3].isActive}
+											onChange={handleChangeColors}
+										/>
+										<label className='cursor-pointer' htmlFor='green'>
+											Xanh lá
+										</label>
+									</div>
+									<div className='flex items-center space-x-2'>
+										<input
+											type='checkbox'
+											name='blue'
+											id='blue'
+											className='w-5 h-5'
+											disabled={!enabled}
+											checked={colors[4].isActive}
+											onChange={handleChangeColors}
+										/>
+										<label className='cursor-pointer' htmlFor='blue'>
+											Xanh da trời
+										</label>
+									</div>
+								</div>
+							</div>
+
+							{/* Kich thuoc */}
+							<div className='flex flex-col space-y-3'>
+								<div className='flex items-center space-x-3'>
+									<p>Kích thước</p>
+								</div>
+
+								<div>
+									<div className='flex items-center space-x-2'>
+										<input
+											type='checkbox'
+											name='freeSize'
+											id='freeSize'
+											className='w-5 h-5'
+											disabled={!enabled}
+											checked={sizes[0].isActive}
+											onChange={handleChangeSizes}
+										/>
+										<label htmlFor='freeSize'>Free Size</label>
+									</div>
+									<div className='flex items-center space-x-2'>
+										<input
+											type='checkbox'
+											name='sizeXs'
+											id='sizeXs'
+											className='w-5 h-5'
+											disabled={!enabled}
+											checked={sizes[1].isActive}
+											onChange={handleChangeSizes}
+										/>
+										<label htmlFor='sizeXs'>Size XS</label>
+									</div>
+									<div className='flex items-center space-x-2'>
+										<input
+											type='checkbox'
+											name='sizeS'
+											id='sizeS'
+											className='w-5 h-5'
+											disabled={!enabled}
+											checked={sizes[2].isActive}
+											onChange={handleChangeSizes}
+										/>
+										<label htmlFor='sizeS'>Size S</label>
+									</div>
+
+									<div className='flex items-center space-x-2'>
+										<input
+											type='checkbox'
+											name='sizeM'
+											id='sizeM'
+											className='w-5 h-5'
+											disabled={!enabled}
+											checked={sizes[3].isActive}
+											onChange={handleChangeSizes}
+										/>
+										<label htmlFor='sizeM'>Size M</label>
+									</div>
+									<div className='flex items-center space-x-2'>
+										<input
+											type='checkbox'
+											name='sizeL'
+											id='sizeL'
+											className='w-5 h-5'
+											disabled={!enabled}
+											checked={sizes[4].isActive}
+											onChange={handleChangeSizes}
+										/>
+										<label htmlFor='sizeL'>Size L</label>
+									</div>
+									<div className='flex items-center space-x-2'>
+										<input
+											type='checkbox'
+											name='sizeXl'
+											id='sizeXl'
+											className='w-5 h-5'
+											disabled={!enabled}
+											checked={sizes[5].isActive}
+											onChange={handleChangeSizes}
+										/>
+										<label htmlFor='sizeXl'>Size XL</label>
+									</div>
+								</div>
+							</div>
 						</div>
+					</div>
+
+					{/* Danh sach phan loai hang */}
+
+					<div className='my-4'>
+						<h1></h1>
+						<table>
+							<thead>
+								<tr>
+									<th className='p-2 border border-gray-300'>Màu sắc</th>
+									<th className='p-2 border border-gray-300'>Kho</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								{colors
+									.filter(item => item.isActive)
+									.map((color, iColor) => (
+										<tr key={iColor} className=''>
+											<td className='capitalize border border-gray-300 p-2'>
+												{color.name}
+											</td>
+
+											<td className='border border-gray-300 divide-y-2'>
+												{color.sizes.map((size, i) => (
+													<div
+														key={i}
+														className='capitalize p-2 flex justify-between items-center space-x-4 '
+													>
+														<div>{size.name}</div>
+
+														<input
+															type='number'
+															className='border border-gray-200 w-20 text-center'
+															// value={size.quantity}
+															onChange={e =>
+																handleChangeInStock(
+																	e,
+																	color.name,
+																	size.name
+																)
+															}
+														/>
+													</div>
+												))}
+											</td>
+										</tr>
+									))}
+							</tbody>
+						</table>
 					</div>
 
 					<div className='flex flex-col space-y-2 my-2'>
