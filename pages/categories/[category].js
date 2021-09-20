@@ -32,6 +32,7 @@ export default function Category() {
 						)
 					)
 					.then(res => {
+						if (res.data.err) return console.log(res.data.err);
 						setProducts(res.data.products);
 						setResult(res.data.result);
 					});
