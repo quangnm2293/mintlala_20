@@ -20,7 +20,7 @@ function Header() {
 	if (process.browser) {
 		document.addEventListener('keyup', e => {
 			if (e.code === 'Enter' && router.pathname === '/') {
-				document.getElementById('searchBtn').click();
+				document.getElementById('searchBtn') && document.getElementById('searchBtn').click();
 			}
 		});
 	}
