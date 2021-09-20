@@ -220,7 +220,7 @@ function ProductsManager() {
 		const newColors = [...colors];
 		newColors.map(color => {
 			if (color.isActive) {
-				color.sizes = activeSizes;
+				color.sizes = JSON.parse(JSON.stringify(activeSizes));
 			}
 		});
 		setSizes(newData);
@@ -235,13 +235,12 @@ function ProductsManager() {
 				color.sizes.map(size => {
 					if (size.name === sizeV) {
 						size.quantity = Number(e.target.value);
-						console.log(color);
 					}
 				});
 			}
 		});
 
-		console.log(newColors);
+		setColors(newColors);
 	};
 
 	if (!user || user.role !== 'admin') return null;
@@ -588,7 +587,7 @@ function ProductsManager() {
 														<input
 															type='number'
 															className='border border-gray-200 w-20 text-center'
-															// value={size.quantity}
+															value={size.quantity}
 															onChange={e =>
 																handleChangeInStock(
 																	e,
