@@ -1,16 +1,8 @@
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
-import { useContext } from 'react';
-import { DataContext } from '../../store/GlobalState';
 import FilterBar from './FilterBar';
 const Product = dynamic(() => import('./Product'), { ssr: false });
 
-function ProductFeed({ products }) {
-	const { state } = useContext(DataContext);
-	const { categories } = state;
-
-	const router = useRouter();
-
+function ProductFeed({ products, router, categories }) {
 	return (
 		<div className='flex divide-x-4'>
 			{/* Left nav */}

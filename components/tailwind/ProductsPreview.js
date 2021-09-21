@@ -3,7 +3,7 @@ const ProductHome = dynamic(() => import('./ProductHome'), { ssr: false });
 
 function ProductsPreview({ products, router, title }) {
 	return (
-		<div className='flex flex-col'>
+		<div className='flex flex-col z-10'>
 			<h1
 				className='text-3xl text-red-700 cursor-pointer font-semibold transition duration-200 transform 
 						animate-pulse origin-left hover:text-red-600 hover:scale-105 my-4 uppercase tracking-widest'
@@ -31,7 +31,7 @@ function ProductsPreview({ products, router, title }) {
 					))}
 				</div>
 
-				<div className='hidden 2xl:grid 2xl:grid-cols-5'>
+				<div className='hidden 2xl:grid 2xl:grid-cols-5 z-10'>
 					{products.slice(0, 5).map(product => (
 						<ProductHome key={product._id} product={product} />
 					))}

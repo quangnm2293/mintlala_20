@@ -21,6 +21,7 @@ module.exports = {
 				'text-1s': 'text 1s ease-in-out infinite',
 				'dash-4s': 'dash 4s cubic-bezier(0.455, 0.3, 0.515, 0.955) infinite alternate-reverse',
 				'scale-1s': 'scale 0.3s ease-in-out 0s',
+				'scaleUp-1s': 'scaleUp 0.3s ease-in-out 0s',
 				'slide-500': 'slide 0.5s ease-out forwards',
 				'slideIn-500': 'slideIn 0.5s ease-out forwards',
 				'slide-right-500': 'slide-right 0.5s ease-out forwards',
@@ -68,6 +69,14 @@ module.exports = {
 					},
 					to: {
 						transform: 'scale(1)',
+					},
+				},
+				scaleUp: {
+					from: {
+						transform: 'scale(1)',
+					},
+					to: {
+						transform: 'scale(0)',
 					},
 				},
 			},

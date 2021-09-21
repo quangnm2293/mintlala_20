@@ -17,13 +17,13 @@ function Header() {
 
 	const [search, setSearch] = useState('');
 
-	if (process.browser) {
-		document.addEventListener('keyup', e => {
-			if (e.code === 'Enter' && router.pathname === '/') {
-				document.getElementById('searchBtn') && document.getElementById('searchBtn').click();
-			}
-		});
-	}
+	// if (process.browser) {
+	// 	document.addEventListener('keyup', e => {
+	// 		if (e.code === 'Enter' && router.pathname === '/') {
+	// 			document.getElementById('searchBtn') && document.getElementById('searchBtn').click();
+	// 		}
+	// 	});
+	// }
 
 	const handleLogout = () => {
 		Cookies.remove('refreshtoken', { path: '/api/auth/accessToken' });

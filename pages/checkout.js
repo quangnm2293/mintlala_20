@@ -145,7 +145,10 @@ export default function Checkout() {
 				{ headers: { Authorization: auth.token } }
 			)
 			.then(res => {
-				if (res.data.err) return dispatch({ type: 'NOTIFY', payload: { error: res.data.err } });
+				if (res.data.err) {
+					router.push('/failure');
+					return dispatch({ type: 'NOTIFY', payload: { error: res.data.err } });
+				}
 
 				dispatch({ type: 'ADD_CART', payload: [] });
 
@@ -153,7 +156,7 @@ export default function Checkout() {
 
 				dispatch({ type: 'NOTIFY', payload: {} });
 
-				router.push('/success');
+				
 			});
 	};
 

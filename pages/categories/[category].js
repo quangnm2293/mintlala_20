@@ -6,13 +6,17 @@ import Header from '../../components/tailwind/Header';
 import ProductFeed from '../../components/tailwind/ProductFeed';
 import Notify from '../../components/tailwind/Notify';
 import Filter from '../../components/tailwind/Filter';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import { DataContext } from '../../store/GlobalState';
 
 export default function Category() {
 	const [products, setProducts] = useState(null);
 	const [result, setResult] = useState(0);
+
+	const { state } = useContext(DataContext);
+	const { categories } = state;
 
 	const router = useRouter();
 
@@ -32,9 +36,14 @@ export default function Category() {
 						)
 					)
 					.then(res => {
-						if (res.data.err) return console.log(res.data.err);
-						setProducts(res.data.products);
-						setResult(res.data.result);
+						if (res.data.err) {
+							setProducts(null);
+							setResult(0);
+							return console.log(res.data.err);
+						} else {
+							setProducts(res.data.products);
+							setResult(res.data.result);
+						}
 					});
 			} catch (err) {
 				console.log(err.message);
@@ -58,7 +67,7 @@ export default function Category() {
 			<Filter result={result} />
 
 			<main className='max-w-screen-2xl mx-auto pl-2'>
-				<ProductFeed products={products} />
+				<ProductFeed products={products} router={router} categories={categories} />
 
 				<Pagination result={result} />
 			</main>
