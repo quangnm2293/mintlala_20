@@ -90,6 +90,11 @@ export async function getServerSideProps({ query }) {
 	);
 	const data = await res.json();
 
+	if (!data)
+		return {
+			props: { data: { products: [], results: [] } },
+		};
+
 	return {
 		props: { data },
 	};
