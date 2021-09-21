@@ -1,41 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ChatAlt2Icon, MenuIcon, PaperAirplaneIcon, XIcon } from '@heroicons/react/outline';
-import { useEffect, useState } from 'react';
-import io from 'socket.io-client';
+import { useContext, useState } from 'react';
+import { DataContext } from '../../store/GlobalState';
 
-const SocketIOClient = io('localhost:3000');
+function SocketIo({ socket }) {
+	const [chatMsg, setChatMsg] = useState('123');
 
-function SocketIo() {
-	// connected flag
-	const [connected, setConnected] = useState(false);
-
-	// init chat and message
-	const [chat, setChat] = useState([]);
-	// const [msg, setMsg] = useState('');
-
-	useEffect(() => {
-		// connect to socket server
-		const socket = SocketIOClient.connect(process.env.BASE_URL, {
-			path: '/api/socket',
-		});
-
-		console.log(socket);
-
-		// log socket connection
-		socket.on('connect', () => {
-			console.log('SOCKET CONNECTED!', socket.id);
-			setConnected(true);
-		});
-
-		// update chat on new message dispatched
-		socket.on('message', message => {
-			chat.push(message);
-			setChat([...chat]);
-		});
-
-		// socket disconnet onUnmount if exists
-		if (socket) return () => socket.disconnect();
-	}, []);
+	const { state } = useContext(DataContext);
+	const { user } = state.auth;
 
 	const handleClose = () => {
 		if (process.browser) {
@@ -48,11 +20,25 @@ function SocketIo() {
 		}
 	};
 	const handleOpen = () => {
-		if (process.browser && connected) {
+		if (process.browser) {
 			const chatModalFullEl = document.getElementById('chatModalFull');
 			chatModalFullEl.classList.remove('hidden', 'animate-scaleUp-1s');
 			chatModalFullEl.classList.add('animate-scale-1s');
 		}
+	};
+
+	const sendMsg = message => {
+		let msg = {
+			user: user ? user.email : socket.id,
+			message,
+		};
+		socket.emit('hello', msg);
+
+		console.log(msg);
+	};
+	const handleSendMsg = () => {
+		sendMsg(chatMsg);
+		setChatMsg('');
 	};
 	return (
 		<div className='fixed bottom-4 right-4 z-50 shadow-2xl'>
@@ -95,9 +81,14 @@ function SocketIo() {
 						type='text'
 						className='p-2 py-5 border border-gray-300 rounded-md flex-grow focus:ring-2 ring-blue-400 focus:outline-none'
 						placeholder='Viết gì đó...'
+						onChange={e => setChatMsg(e.target.value)}
+						value={chatMsg}
 					/>
 
-					<PaperAirplaneIcon className='h-6 rotate-90 px-2 cursor-pointer text-gray-500' />
+					<PaperAirplaneIcon
+						className='h-6 rotate-90 px-2 cursor-pointer text-gray-500'
+						onClick={handleSendMsg}
+					/>
 				</div>
 			</div>
 		</div>

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Head from 'next/head';
-import Pagination from '../../components/Pagination';
+// import Pagination from '../../components/Pagination';
 import Footer from '../../components/Footer';
 import Header from '../../components/tailwind/Header';
 import ProductFeed from '../../components/tailwind/ProductFeed';
@@ -66,7 +66,7 @@ export default function Category({ data }) {
 			<main className='max-w-screen-2xl mx-auto pl-2'>
 				<ProductFeed products={products} router={router} categories={categories} />
 
-				<Pagination result={result} />
+				{/* <Pagination result={result} /> */}
 			</main>
 
 			<Footer />
@@ -92,7 +92,7 @@ export async function getServerSideProps({ query }) {
 
 	if (!data)
 		return {
-			props: { data: { products: [], results: [] } },
+			props: { data: { products: [], results: 0 } },
 		};
 
 	return {

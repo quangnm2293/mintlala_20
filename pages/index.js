@@ -12,10 +12,13 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import TopSoldAndNews from '../components/tailwind/TopSoldAndNews';
 import SocketIo from '../components/tailwind/SocketIo';
+import { io } from 'socket.io-client';
 
 export default function Home() {
 	const [products, setProducts] = useState([]);
 	const router = useRouter();
+
+	const [socket, setSocket] = useState({});
 
 	const page = router.query.page || 1;
 	const category = router.query.category || 'all';
@@ -42,6 +45,12 @@ export default function Home() {
 		getProducts();
 	}, []);
 
+	useEffect(() => {
+		const socket = io();
+		socket.emit('connect1', 'Hi');
+		setSocket(socket);
+	}, []);
+
 	return (
 		<div>
 			<Head>
@@ -62,7 +71,7 @@ export default function Home() {
 
 				<TopSoldAndNews />
 
-				<SocketIo />
+				<SocketIo socket={socket} />
 			</main>
 			<Footer />
 		</div>
