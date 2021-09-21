@@ -11,7 +11,7 @@ import { CheckCircleIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import axios from 'axios';
 
-export default function Shipping() {
+export default function Checkout() {
 	const router = useRouter();
 
 	const initialState = { fullName: '', address: '', city: '', phone: '', ward: '', district: '' };
@@ -151,10 +151,10 @@ export default function Shipping() {
 
 				dispatch({ type: 'ADD_ORDERS', payload: [...orders, res.data.newOrder] });
 
-				dispatch({ type: 'NOTIFY', payload: { success: res.data.msg } });
-			});
+				dispatch({ type: 'NOTIFY', payload: {} });
 
-		router.push('/success');
+				router.push('/success');
+			});
 	};
 
 	const handleMgg = () => {
@@ -405,9 +405,9 @@ export default function Shipping() {
 					<div className='lg:p-5'>
 						{/* Sản phẩm */}
 						<div>
-							{cart.map(item => (
+							{cart.map((item, i) => (
 								<div
-									key={item._id}
+									key={i}
 									className='flex space-x-3 items-center justify-between my-2 last:border-b border-gray-300 last:pb-4'
 								>
 									<div className='flex space-x-2'>
@@ -425,6 +425,18 @@ export default function Shipping() {
 											<p className='capitalize line-clamp-1'>
 												{item.title}
 											</p>
+
+											<div className='flex text-xs space-x-2 capitalize font-bold text-gray-500'>
+												<p>Phân loại:</p>
+												<p>{item.colors[item.selectedColor].name}</p>,
+												<p>
+													{
+														item.colors[item.selectedColor]
+															.sizes[item.selectedSize].name
+													}
+												</p>
+											</div>
+
 											<p className='text-md text-gray-400 font-semibold'>
 												{item.quantity} sản phẩm
 											</p>

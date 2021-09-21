@@ -20,6 +20,7 @@ function ProductDetail() {
 	const [product, setProduct] = useState();
 	const [selectedColor, setSelectedColor] = useState(0);
 	const [selectedSize, setSelectedSize] = useState(0);
+	const [controlSize, setControlSize] = useState(false);
 
 	const { state, dispatch } = useContext(DataContext);
 	const { cart } = state;
@@ -43,21 +44,31 @@ function ProductDetail() {
 		if (product.inStock <= 0) {
 			dispatch({ type: 'NOTIFY', payload: { error: 'Xin lỗi sản phẩm tạm hết hàng!' } });
 		} else {
-			dispatch(addToCart({ ...product, selectedColor, selectedSize }, cart));
-			dispatch({ type: 'NOTIFY', payload: { success: 'Thêm vào giỏ thành công!' } });
+			if (!controlSize) {
+				dispatch({ type: 'NOTIFY', payload: { error: 'Vui lòng chọn size!' } });
+			} else {
+				dispatch(addToCart({ ...product, selectedColor, selectedSize }, cart));
+				dispatch({ type: 'NOTIFY', payload: { success: 'Thêm vào giỏ thành công!' } });
+			}
 		}
 	};
 	const handleCheckout = () => {
 		if (product.inStock <= 0) {
 			dispatch({ type: 'NOTIFY', payload: { error: 'Xin lỗi sản phẩm tạm hết hàng!' } });
 		} else {
-			dispatch(addToCart(product, cart));
+			dispatch(addToCart({ ...product, selectedColor, selectedSize }, cart));
 			router.push('/checkout');
 		}
 	};
 
+	const handleSelectedSize = (size, quantity) => {
+		if (quantity === 0) return dispatch({ type: 'NOTIFY', payload: { error: 'Xin lỗi phân loại hết hàng!' } });
+		setSelectedSize(size);
+		setControlSize(true);
+	};
+
 	return (
-		<div className='bg-gray-100'>
+		<div className='bg-gray-200'>
 			<Head>
 				<title>MINT Lala - Chi tiết sản phẩm</title>
 			</Head>
@@ -65,7 +76,7 @@ function ProductDetail() {
 			<Header />
 
 			<main className='max-w-screen-2xl mx-auto min-h-screen'>
-				<div className='grid lg:grid-cols-2 my-4 p-5 bg-white'>
+				<div className='grid lg:grid-cols-2 my-4 p-5 bg-gray-100'>
 					{/* image */}
 					<div className='lg:p-5'>
 						<div className='relative group'>
@@ -170,38 +181,41 @@ function ProductDetail() {
 							<p className='text-gray-700 text-xl mb-4 font-bold'>Màu sắc</p>
 
 							<div className='flex space-x-3 items-center '>
-								{product.colors
-									.filter(item => item.isActive)
-									.map((color, i) => (
+								{product.colors.map((color, i) => (
+									<div
+										key={i}
+										className={`cursor-pointer rounded-full ${
+											selectedColor === i
+												? `border-2 ${
+														color.name === 'black'
+															? 'border-black'
+															: color.name === 'white'
+															? 'border-white'
+															: color.name === 'red'
+															? 'border-red-500'
+															: color.name === 'green'
+															? 'border-green-500'
+															: 'border-blue-500'
+												  }`
+												: 'border-0'
+										}  p-1`}
+										onClick={() => setSelectedColor(i)}
+									>
 										<div
-											key={i}
-											className={`cursor-pointer rounded-full ${
-												selectedColor === i
-													? `border-2 border-${
-															color.name === 'black' ||
-															color.name === 'white'
-																? color.name
-																: color.name + '-400'
-													  }`
-													: 'border-0'
-											}  p-1`}
-											onClick={() => setSelectedColor(i)}
-										>
-											<div
-												className={`h-10 w-10 rounded-full bg-${
-													color.name === 'black' ||
-													color.name === 'white'
-														? color.name
-														: color.name + '-500'
-												} active:ring-2 ring-${
-													color.name === 'black' ||
-													color.name === 'white'
-														? color.name
-														: color.name + '-500'
-												} active:ring-offset-4`}
-											></div>
-										</div>
-									))}
+											className={`h-10 w-10 rounded-full ${
+												color.name === 'black'
+													? 'bg-black'
+													: color.name === 'white'
+													? 'bg-white'
+													: color.name === 'red'
+													? 'bg-red-500'
+													: color.name === 'green'
+													? 'bg-green-500'
+													: 'bg-blue-500'
+											}`}
+										></div>
+									</div>
+								))}
 							</div>
 						</div>
 
@@ -216,23 +230,27 @@ function ProductDetail() {
 										Xin lỗi phân loại hết hàng
 									</p>
 								) : (
-									product.colors[selectedColor].sizes
-										.filter(size => size.quantity > 0)
-										.map((size, i) => (
-											<div
-												key={i}
-												className={`w-20 h-10 rounded-md ${
-													selectedSize === i
-														? 'border-4 border-blue-400'
-														: ''
-												} flex items-center justify-center cursor-pointer`}
-												onClick={() => setSelectedSize(i)}
+									product.colors[selectedColor].sizes.map((size, i) => (
+										<div
+											key={i}
+											className={`w-20 h-10 rounded-md ${
+												selectedSize === i && size.quantity > 0
+													? 'border-4 border-blue-400'
+													: 'border-2 border-gray-200'
+											} flex items-center justify-center cursor-pointer`}
+											onClick={() => handleSelectedSize(i, size.quantity)}
+										>
+											<p
+												className={`font-bold  capitalize ${
+													size.quantity === 0
+														? 'line-through cursor-not-allowed text-gray-300'
+														: 'text-gray-400'
+												}`}
 											>
-												<p className='font-bold text-gray-400 capitalize'>
-													{size.name}
-												</p>
-											</div>
-										))
+												{size.name}
+											</p>
+										</div>
+									))
 								)}
 							</div>
 						</div>

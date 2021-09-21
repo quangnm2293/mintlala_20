@@ -38,16 +38,9 @@ const createOrder = async (req, res) => {
 			guestOrder,
 		});
 
-		cart.filter(item => {
-			return sold(
-				item._id,
-				item.quantity,
-				item.inStock,
-				item.sold,
-				item.colors,
-				item.selectedColor,
-				item.selectedSize
-			);
+		cart.map(item => {
+			item.colors[item.selectedColor].sizes[item.selectedSize].quantity -= item.quantity;
+			sold(item._id, item.quantity, item.colors);
 		});
 
 		await newOrder.save();
@@ -58,12 +51,12 @@ const createOrder = async (req, res) => {
 	}
 };
 
-const sold = async (id, quantity, oldInStock, oldSold, oldColors, color, size) => {
-	oldColors[color].sizes[size].quantity -= quantity;
-	await Product.findOneAndUpdate(
-		{ _id: id },
-		{ inStock: oldInStock - quantity, sold: oldSold + quantity, colors: oldColors }
-	);
+const sold = async (id, quantity, oldColors) => {
+	const product = await Product.findById(id);
+	const { inStock, sold } = product;
+	console.log(inStock, quantity);
+
+	await Product.findByIdAndUpdate(id, { inStock: inStock - quantity, sold: sold + quantity, colors: oldColors });
 };
 
 const getOrders = async (req, res) => {

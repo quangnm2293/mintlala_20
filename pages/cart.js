@@ -103,8 +103,8 @@ export default function Cart({ products }) {
 							)}
 						</h1>
 
-						{cart.map(item => (
-							<CartItem key={item._id} item={item} />
+						{cart.map((item, i) => (
+							<CartItem key={i} item={item} />
 						))}
 					</div>
 				</div>
