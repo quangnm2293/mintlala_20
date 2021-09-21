@@ -228,7 +228,12 @@ function Header() {
 					<MenuIcon className='hidden sm:inline h-6 mr-1' />
 					Tất cả
 				</p>
-				<p className='md:hover:outline-while_solid p-1 cursor-pointer'>Nổi bật hôm nay</p>
+				<p
+					className='md:hover:outline-while_solid p-1 cursor-pointer'
+					onClick={() => router.push('/categories/6131eb4875057705f0779079')}
+				>
+					Nổi bật hôm nay
+				</p>
 				<p
 					className='md:hover:outline-while_solid p-1 cursor-pointer'
 					onClick={() => router.push('/categories/6131eb4875057705f0779079')}

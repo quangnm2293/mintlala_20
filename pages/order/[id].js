@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../store/GlobalState';
@@ -5,6 +6,8 @@ import Head from 'next/head';
 import Link from 'next/link';
 import axios from 'axios';
 import { displayPrice } from '../../utils/validProduct';
+import Header from '../../components/tailwind/Header';
+import Image from 'next/image';
 
 function OrderDetail() {
 	const router = useRouter();
@@ -67,138 +70,168 @@ function OrderDetail() {
 	if (orderDetail === {}) return null;
 
 	return (
-		<div className='my-3'>
+		<div className='bg-gray-100 min-h-screen'>
 			<Head>
 				<title>Chi tiết đơn hàng</title>
 			</Head>
 
-			<div>
-				<button className='btn btn-secondary' onClick={() => router.back()} style={{ minWidth: 120 }}>
-					<i className='fas fa-long-arrow-alt-left' aria-hidden></i> Trở lại
+			<Header />
+
+			<main className='max-w-screen-2xl mx-auto bg-white p-5'>
+				<button className='button-blue font-bold text-lg w-40' onClick={() => router.back()}>
+					&larr; Trở lại
 				</button>
-			</div>
 
-			<div className='my-4 mx-auto'>
-				<div>
-					<h2>Chi tiết đơn hàng {orderDetail._id ? orderDetail._id.substring(20, 24) : ''}</h2>
-					<p>
-						<strong>Tên:</strong> {orderDetail.fullName}
-					</p>
-					<p>
-						<strong>Email:</strong>{' '}
-						{orderDetail.user.email === 'miqshop261192@gmail.com'
-							? 'GUEST'
-							: orderDetail.user.email}
-					</p>
-					<p>
-						<strong>Địa chỉ:</strong> {orderDetail.address}
-					</p>
-					<p>
-						<strong>Số điện thoại:</strong> {orderDetail.phone}
-					</p>
+				<div className='my-4 mx-auto'>
+					<div className='flex flex-col space-y-2'>
+						<h2 className='text-xl lg:text-2xl text-gray-600 font-semibold my-5'>
+							Chi tiết đơn hàng {orderDetail._id ? orderDetail._id.substring(20, 24) : ''}
+						</h2>
+						<p>
+							Tên: <strong>{orderDetail.fullName}</strong>
+						</p>
+						<p>
+							Email:
+							<strong>
+								{orderDetail.user.email === 'miqshop261192@gmail.com'
+									? ' GUEST'
+									: orderDetail.user.email}
+							</strong>
+						</p>
+						<p>
+							Địa chỉ:<strong> {orderDetail.address}</strong>
+						</p>
+						<p>
+							Số điện thoại: <strong>{orderDetail.phone}</strong>
+						</p>
 
-					<p>
-						<strong>Tổng số tiền cần thanh toán:</strong>{' '}
-						<span className='text-danger'>
-							<small>&#x20AB;</small>
-							{orderDetail.delivered
-								? 0
-								: total < 500000
-								? displayPrice(total + 20000)
-								: displayPrice(total)}
-						</span>
-					</p>
-					<p>
-						<strong>Phương thức thanh toán:</strong>{' '}
-						{orderDetail.paymentMethod === 'transfer' ? (
-							<span className='text-danger'>
-								Vui lòng chuyển khoản qua stk: 0441000733443 Nguyễn Minh Quang -
-								Vietcombank với nội dung ten_sodienthoai
-							</span>
-						) : (
-							'Thanh toán khi nhận hàng'
+						<p>
+							Tổng số tiền cần thanh toán:{' '}
+							<strong>
+								<span className='text-red-700'>
+									<small>&#x20AB;</small>
+									{orderDetail.delivered
+										? 0
+										: total < 500000
+										? displayPrice(total + 20000)
+										: displayPrice(total)}
+								</span>
+							</strong>{' '}
+						</p>
+						<p>
+							Phương thức thanh toán:{' '}
+							<strong>
+								{orderDetail.paymentMethod === 'transfer' ? (
+									<span className='text-danger'>
+										Vui lòng chuyển khoản qua stk: 0441000733443 Nguyễn Minh
+										Quang - Vietcombank với nội dung ten_sodienthoai
+									</span>
+								) : (
+									'Thanh toán khi nhận hàng'
+								)}
+							</strong>
+						</p>
+						<p>
+							Trạng thái:
+							<strong>
+								{' '}
+								{orderDetail.isPaid
+									? `Đã thanh toán lúc ${new Date(
+											orderDetail.updatedAt
+									  ).toLocaleString()}`
+									: 'Chưa thanh toán'}
+							</strong>
+						</p>
+					</div>
+
+					<div
+						className={`flex flex-col lg:flex-row justify-between items-center p-5 my-5 rounded-md ${
+							orderDetail.delivered ? 'bg-blue-300' : 'bg-red-300'
+						}`}
+					>
+						{orderDetail.delivered
+							? `Đã giao hàng lúc ${new Date(orderDetail.updatedAt).toLocaleString()}`
+							: 'Chưa giao hàng'}
+						{auth.user.role === 'admin' && !orderDetail.delivered && (
+							<button
+								className='button-green w-44'
+								onClick={() => handleDelivered(orderDetail._id)}
+							>
+								Đánh dấu đã giao
+							</button>
 						)}
-					</p>
-					<p>
-						<strong>Trạng thái:</strong>{' '}
-						{orderDetail.isPaid
-							? `Đã thanh toán lúc ${new Date(orderDetail.updatedAt).toLocaleString()}`
-							: 'Chưa thanh toán'}
-					</p>
-				</div>
+					</div>
 
-				<div
-					className={
-						orderDetail.delivered
-							? 'alert alert-success d-flex justify-content-between align-items-center'
-							: 'alert alert-danger d-flex justify-content-between align-items-center'
-					}
-					role='alert'
-					style={{ maxWidth: 600 }}
-				>
-					{orderDetail.delivered
-						? `Đã giao hàng lúc ${new Date(orderDetail.updatedAt).toLocaleString()}`
-						: 'Chưa giao hàng'}
-					{auth.user.role === 'admin' && !orderDetail.delivered && (
-						<button className='btn btn-dark' onClick={() => handleDelivered(orderDetail._id)}>
-							Đánh dấu đã giao
-						</button>
-					)}
-				</div>
+					<h3 className='text-gray-600 text-xl lg:text-2xl font-semibold my-4'>
+						Chi tiết sản phẩm
+					</h3>
 
-				<h3 className='text-center'>Chi tiết sản phẩm</h3>
-
-				<div className='table-responsive my-4'>
-					<table className='table table-bordered table-striped'>
-						<thead>
-							<tr>
-								<th>STT</th>
-								<th style={{ minWidth: '200px' }}>Tên sản phẩm</th>
-								<th style={{ minWidth: '100px' }}>Số lượng</th>
-								<th>Giá</th>
-							</tr>
-						</thead>
-						<tbody>
-							{orderDetail.cart.map(item => (
-								<tr key={item._id}>
-									<td className='align-middle'>
-										<Link href={`/product/${item._id}`}>
-											<a>
-												{/* eslint-disable-next-line @next/next/no-img-element  */}
-												<img
-													className='img-thumbnail'
-													src={item.images[0].url}
-													alt='sản phẩm'
-													style={{
-														height: 65,
-														width: 65,
-														minWidth: 70,
-													}}
-												></img>
-											</a>
-										</Link>
-									</td>
-									<td className='align-middle text-capitalize'>
-										<Link href={`/product/${item._id}`}>
-											<a>
-												<strong>{item.title}</strong>
-											</a>
-										</Link>
-									</td>
-									<td className='align-middle text-capitalize'>{item.quantity}</td>
-									<td className='align-middle text-capitalize text-danger'>
-										<small>&#x20AB;</small>
-										{displayPrice(item.priceSale * item.quantity)}
-									</td>
+					<div className='max-w-[100vw] overflow-x-auto scrollbar-hide'>
+						<table className='table-fixed	'>
+							<thead>
+								<tr className='border border-gray-300 divide-x-2 rounded-md'>
+									<th className='p-2'>Sản phẩm</th>
+									<th>Số lượng</th>
+									<th>Giá</th>
 								</tr>
-							))}
-						</tbody>
-					</table>
+							</thead>
+							<tbody className='divide-y-2'>
+								{orderDetail.cart.map((item, i) => (
+									<tr key={i}>
+										<td className='flex items-center capitalize space-x-2 min-w-[400px] p-2'>
+											<Link href={`/product/${item._id}`}>
+												<a>
+													<Image
+														className='rounded-md'
+														src={item.images[0].url}
+														alt='sản phẩm'
+														width={100}
+														height={100}
+													></Image>
+												</a>
+											</Link>
+
+											<div>
+												<Link href={`/product/${item._id}`}>
+													<a className='line-clamp-1 lg:line-clamp-2'>
+														{item.title}
+													</a>
+												</Link>
+
+												<div className='flex text-xs text-gray-500 capitalize space-x-2'>
+													<p>Phân loại:</p>
+													<p>
+														{item.colors &&
+															item.colors[
+																item.selectedColor
+															].name}
+													</p>
+													,
+													<p>
+														{item.colors &&
+															item.colors[0].sizes[
+																item.selectedSize
+															].name}
+													</p>
+												</div>
+											</div>
+										</td>
+										<td className='min-w-[120px] text-center'>
+											{item.quantity}
+										</td>
+										<td className='min-w-[120px] text-center text-red-600'>
+											<small>&#x20AB; </small>
+											{displayPrice(item.priceSale * item.quantity)}
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
 				</div>
-			</div>
+			</main>
 		</div>
 	);
 }
 
 export default OrderDetail;
-

@@ -57,7 +57,7 @@ function OrderHistoryUser({ orders, router }) {
 										height='100'
 										width='100'
 										className='cursor-pointer transition-transform duration-300 hover:scale-110'
-										onClick={() => router.push(`/product/${item._id}`)}
+										onClick={() => router.push(`/order/${item._id}`)}
 									/>
 								</div>
 							))}
