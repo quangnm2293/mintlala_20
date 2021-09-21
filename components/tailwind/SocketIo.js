@@ -48,7 +48,7 @@ function SocketIo() {
 		}
 	};
 	const handleOpen = () => {
-		if (process.browser) {
+		if (process.browser && connected) {
 			const chatModalFullEl = document.getElementById('chatModalFull');
 			chatModalFullEl.classList.remove('hidden', 'animate-scaleUp-1s');
 			chatModalFullEl.classList.add('animate-scale-1s');
