@@ -16,39 +16,52 @@ export const addToCart = (product, cart) => {
 	const check = cart.every(item => {
 		return item._id !== product._id;
 	});
-	
+
 	if (!check) {
 		const newData = [...cart];
+		let isExists = false;
 		newData.forEach(item => {
-			if (item._id === product._id) item.quantity += 1;
+			if (
+				item._id === product._id &&
+				item.selectedColor === product.selectedColor &&
+				item.selectedSize === product.selectedSize
+			) {
+				item.quantity += 1;
+				isExists = true;
+			}
 		});
-		return { type: 'ADD_CART', payload: newData };
+		if (isExists) {
+			return { type: 'ADD_CART', payload: newData };
+		} else {
+			return { type: 'ADD_CART', payload: [...cart, { ...product, quantity: 1 }] };
+		}
 	}
 
 	return { type: 'ADD_CART', payload: [...cart, { ...product, quantity: 1 }] };
 };
 
-export const decrease = (data, id) => {
+export const decrease = (data, id, color, size) => {
 	const newData = [...data];
 	newData.forEach(item => {
-		if (item._id === id) item.quantity -= 1;
+		if (item._id === id && item.selectedColor === color && item.selectedSize === size) item.quantity -= 1;
 	});
 
 	return { type: 'ADD_CART', payload: newData };
 };
 
-export const increase = (data, id) => {
+export const increase = (data, id, color, size) => {
 	const newData = [...data];
 	newData.forEach(item => {
-		if (item._id === id) item.quantity += 1;
+		if (item._id === id && item.selectedColor === color && item.selectedSize === size) item.quantity += 1;
 	});
 	return { type: 'ADD_CART', payload: newData };
 };
 
-export const deleteItemFromCart = (data, id) => {
+export const deleteItemFromCart = (data, id, select, size) => {
 	const newData = [...data];
 	newData.forEach((item, index) => {
-		if (item._id === id) newData.splice(index, 1);
+		if (item._id === id && item.selectedColor === select && item.selectedSize === size)
+			newData.splice(index, 1);
 	});
 
 	return { type: 'ADD_CART', payload: newData };

@@ -36,16 +36,21 @@ export default function Cart({ products }) {
 				for (const item of cartLocal) {
 					const res = await axios.get(`/api/product/${item._id}`);
 
-					const { _id, title, images, priceSale, inStock, sold } = res.data.product;
-					if (inStock > 0) {
+					const { _id, title, images, priceSale, priceOrigin, inStock, sold, colors } =
+						res.data.product;
+					if (colors[item.selectedColor].sizes[item.selectedSize].quantity > 0) {
 						newArr.push({
 							_id,
 							title,
 							images,
+							colors,
 							priceSale,
 							inStock,
 							sold,
 							quantity: item.quantity > inStock ? inStock : item.quantity,
+							priceOrigin,
+							selectedColor: item.selectedColor,
+							selectedSize: item.selectedSize,
 						});
 					}
 				}

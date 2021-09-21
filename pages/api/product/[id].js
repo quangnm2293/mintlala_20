@@ -39,7 +39,7 @@ const updateProduct = async (req, res) => {
 		if (result.role !== 'admin') return res.status(403).json({ err: 'Bạn không đủ quyền chỉnh sửa sản phẩm.' });
 
 		const { id } = req.query;
-		const { title, priceOrigin, priceSale, inStock, description, content, category, images } = req.body;
+		const { title, priceOrigin, priceSale, inStock, description, content, category, images, colors } = req.body;
 
 		if (
 			!title ||
@@ -50,7 +50,8 @@ const updateProduct = async (req, res) => {
 			!content ||
 			category === 'all' ||
 			category === '' ||
-			images.length === 0
+			images.length === 0 ||
+			colors.length === 0
 		)
 			return res.status(400).json({ err: 'Vui lòng điền tất cả các trường.' });
 
@@ -63,6 +64,7 @@ const updateProduct = async (req, res) => {
 			content,
 			category,
 			images,
+			colors,
 		});
 
 		res.json({ msg: 'Cập nhật sản phẩm thành công!' });

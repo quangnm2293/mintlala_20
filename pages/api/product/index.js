@@ -69,7 +69,7 @@ const createProduct = async (req, res) => {
 		const result = await auth(req, res);
 		if (result.role !== 'admin') return res.status(403).json({ err: 'Bạn không đủ quyền chỉnh sửa sản phẩm.' });
 
-		const { title, priceOrigin, priceSale, inStock, description, content, category, images } = req.body;
+		const { title, priceOrigin, priceSale, inStock, description, content, category, images, colors } = req.body;
 
 		if (
 			!title ||
@@ -80,7 +80,8 @@ const createProduct = async (req, res) => {
 			!content ||
 			category === 'all' ||
 			category === '' ||
-			images.length === 0
+			images.length === 0 ||
+			colors.length === 0
 		)
 			return res.json({ err: 'Vui lòng điền tất cả các trường.' });
 
@@ -93,6 +94,7 @@ const createProduct = async (req, res) => {
 			content,
 			category,
 			images,
+			colors,
 		});
 
 		await newProduct.save();

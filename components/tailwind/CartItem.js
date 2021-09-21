@@ -1,4 +1,3 @@
-import { StarIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
@@ -21,16 +20,16 @@ function CartItem({ item }) {
 			e.target
 				.closest('#cartItem')
 				.classList.remove('transition', 'duration-500', 'ease-in-out', 'transform', 'scale-0');
-			dispatch(deleteItemFromCart(cart, item._id));
+			dispatch(deleteItemFromCart(cart, item._id, item.selectedColor, item.selectedSize));
 		}, 500);
 	};
 
 	const decreaseQuantity = () => {
-		dispatch(decrease(cart, item._id));
+		dispatch(decrease(cart, item._id, item.selectedColor, item.selectedSize));
 	};
 
 	const increaseQuantity = () => {
-		dispatch(increase(cart, item._id));
+		dispatch(increase(cart, item._id, item.selectedColor, item.selectedSize));
 	};
 	return (
 		<div className='grid grid-cols-5' id='cartItem'>
@@ -52,19 +51,17 @@ function CartItem({ item }) {
 					{item.title}
 				</p>
 
-				<div className='flex'>
-					{Array(item.rating)
-						.fill()
-						.map((_, i) => (
-							<StarIcon key={i} className='h-5 text-yellow-500' />
-						))}
+				<div className='flex text-xs text-gray-500 capitalize space-x-2'>
+					<p>Phân loại:</p>
+					<p>{item.colors && item.colors[item.selectedColor].name}</p>,
+					<p>{item.colors && item.colors[0].sizes[item.selectedSize].name}</p>
 				</div>
 
 				<p className='line-clamp-2 text-xs'>{item.description}</p>
 
 				<div className='flex space-x-2'>
 					<div className='text-gray-600 line-through'>
-						<Currency quantity={item.priceSale} currency='VND' pattern='##,### !' group='.' />
+						<Currency quantity={item.priceOrigin} currency='VND' pattern='##,### !' group='.' />
 					</div>
 
 					<div className='text-red-600'>
@@ -90,7 +87,10 @@ function CartItem({ item }) {
 					<button
 						className='w-9 py-[2px] border border-[#a2a6ac] bg-[#eceef0] rounded-r-md text-black font-bold disabled:border-0'
 						onClick={increaseQuantity}
-						disabled={item.quantity === item.inStock}
+						disabled={
+							item.quantity ===
+							item.colors[item.selectedColor].sizes[item.selectedSize].quantity
+						}
 					>
 						+
 					</button>

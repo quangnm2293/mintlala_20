@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import React, { useContext, useEffect, useState } from 'react';
@@ -17,6 +18,8 @@ function ProductDetail() {
 
 	const [tab, setTab] = useState(0);
 	const [product, setProduct] = useState();
+	const [selectedColor, setSelectedColor] = useState(0);
+	const [selectedSize, setSelectedSize] = useState(0);
 
 	const { state, dispatch } = useContext(DataContext);
 	const { cart } = state;
@@ -40,7 +43,7 @@ function ProductDetail() {
 		if (product.inStock <= 0) {
 			dispatch({ type: 'NOTIFY', payload: { error: 'Xin lỗi sản phẩm tạm hết hàng!' } });
 		} else {
-			dispatch(addToCart(product, cart));
+			dispatch(addToCart({ ...product, selectedColor, selectedSize }, cart));
 			dispatch({ type: 'NOTIFY', payload: { success: 'Thêm vào giỏ thành công!' } });
 		}
 	};
@@ -166,37 +169,71 @@ function ProductDetail() {
 						<div>
 							<p className='text-gray-700 text-xl mb-4 font-bold'>Màu sắc</p>
 
-							<div className='flex space-x-3 items-center'>
-								<span className='h-10 w-10 rounded-full cursor-pointer bg-gray-600 active:ring-2 ring-gray-600 active:ring-offset-4'></span>
-								<div className='cursor-pointer rounded-full border-2 border-red-500 p-1'>
-									<div className='h-10 w-10 rounded-full bg-red-500 active:ring-2 ring-red-500 active:ring-offset-4'></div>
-								</div>
-								<span className='h-10 w-10 rounded-full cursor-pointer bg-blue-500 active:ring-2 ring-blue-500 active:ring-offset-4'></span>
-								<span className='h-10 w-10 rounded-full cursor-pointer bg-green-500 active:ring-2 ring-green-500 active:ring-offset-4'></span>
-								<span className='h-10 w-10 rounded-full cursor-pointer bg-yellow-500 active:ring-2 ring-yellow-500 active:ring-offset-4'></span>
+							<div className='flex space-x-3 items-center '>
+								{product.colors
+									.filter(item => item.isActive)
+									.map((color, i) => (
+										<div
+											key={i}
+											className={`cursor-pointer rounded-full ${
+												selectedColor === i
+													? `border-2 border-${
+															color.name === 'black' ||
+															color.name === 'white'
+																? color.name
+																: color.name + '-400'
+													  }`
+													: 'border-0'
+											}  p-1`}
+											onClick={() => setSelectedColor(i)}
+										>
+											<div
+												className={`h-10 w-10 rounded-full bg-${
+													color.name === 'black' ||
+													color.name === 'white'
+														? color.name
+														: color.name + '-500'
+												} active:ring-2 ring-${
+													color.name === 'black' ||
+													color.name === 'white'
+														? color.name
+														: color.name + '-500'
+												} active:ring-offset-4`}
+											></div>
+										</div>
+									))}
 							</div>
 						</div>
 
 						{/* Size */}
 						<div className='overflow-x-auto'>
-							<p className='text-gray-700 text-xl mb-4 font-bold'>Màu sắc</p>
+							<p className='text-gray-700 text-xl mb-4 font-bold'>Size</p>
 
 							<div className='flex flex-wrap space-x-2'>
-								<div className='w-14 h-10 rounded-md border-2 border-gray-300 flex items-center justify-center cursor-pointer'>
-									<p className='font-bold text-gray-400'>XS</p>
-								</div>
-								<div className='w-14 h-10 rounded-md border-4 border-blue-400 flex items-center justify-center cursor-pointer'>
-									<p className='font-bold text-gray-400'>S</p>
-								</div>
-								<div className='w-14 h-10 rounded-md border-2 border-gray-300 flex items-center justify-center cursor-pointer'>
-									<p className='font-bold text-gray-400'>M</p>
-								</div>
-								<div className='w-14 h-10 rounded-md border-2 border-gray-300 flex items-center justify-center cursor-pointer'>
-									<p className='font-bold text-gray-400'>L</p>
-								</div>
-								<div className='w-14 h-10 rounded-md border-2 border-gray-300 flex items-center justify-center cursor-pointer'>
-									<p className='font-bold text-gray-400'>XL</p>
-								</div>
+								{product.colors[selectedColor].sizes.filter(size => size.quantity > 0)
+									.length === 0 ? (
+									<p className='text-md font-semibold text-red-400'>
+										Xin lỗi phân loại hết hàng
+									</p>
+								) : (
+									product.colors[selectedColor].sizes
+										.filter(size => size.quantity > 0)
+										.map((size, i) => (
+											<div
+												key={i}
+												className={`w-20 h-10 rounded-md ${
+													selectedSize === i
+														? 'border-4 border-blue-400'
+														: ''
+												} flex items-center justify-center cursor-pointer`}
+												onClick={() => setSelectedSize(i)}
+											>
+												<p className='font-bold text-gray-400 capitalize'>
+													{size.name}
+												</p>
+											</div>
+										))
+								)}
 							</div>
 						</div>
 

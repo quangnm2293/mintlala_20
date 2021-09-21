@@ -27,23 +27,7 @@ function ProductsManager() {
 		category: '',
 	};
 
-	const [product, setProduct] = useState(initialState);
-	const { title, priceOrigin, priceSale, inStock, description, category } = product;
-
-	const [images, setImages] = useState([]);
-	const [onEdit, setOnEdit] = useState(false);
-	const [content, setContent] = useState('');
-	const [body, setBody] = useState('');
-	const [enabled, setEnabled] = useState(false);
-	const [sizes, setSizes] = useState([
-		{ name: 'freeSize', isActive: false, quantity: 0 },
-		{ name: 'sizeXs', isActive: false, quantity: 0 },
-		{ name: 'sizeS', isActive: false, quantity: 0 },
-		{ name: 'sizeM', isActive: false, quantity: 0 },
-		{ name: 'sizeL', isActive: false, quantity: 0 },
-		{ name: 'sizeXl', isActive: false, quantity: 0 },
-	]);
-	const [colors, setColors] = useState([
+	const initialColorsState = [
 		{
 			name: 'red',
 			isActive: false,
@@ -69,7 +53,26 @@ function ProductsManager() {
 			isActive: false,
 			sizes: [],
 		},
+	];
+
+	const [product, setProduct] = useState(initialState);
+	const { title, priceOrigin, priceSale, description, category } = product;
+	let { inStock } = product;
+
+	const [images, setImages] = useState([]);
+	const [onEdit, setOnEdit] = useState(false);
+	const [content, setContent] = useState('');
+	const [body, setBody] = useState('');
+	const [enabled, setEnabled] = useState(false);
+	const [sizes, setSizes] = useState([
+		{ name: 'freeSize', isActive: false, quantity: 0 },
+		{ name: 'sizeXs', isActive: false, quantity: 0 },
+		{ name: 'sizeS', isActive: false, quantity: 0 },
+		{ name: 'sizeM', isActive: false, quantity: 0 },
+		{ name: 'sizeL', isActive: false, quantity: 0 },
+		{ name: 'sizeXl', isActive: false, quantity: 0 },
 	]);
+	const [colors, setColors] = useState(initialColorsState);
 
 	const { state, dispatch } = useContext(DataContext);
 	const { categories, auth } = state;
@@ -87,11 +90,13 @@ function ProductsManager() {
 						setBody(res.data.product.content);
 						setImages(res.data.product.images);
 						setContent(res.data.product.content);
+						setColors(res.data.product.colors);
 					});
 				} else {
 					setOnEdit(false);
 					setProduct(initialState);
 					setImages([]);
+					setColors(initialColorsState);
 				}
 			} catch (err) {
 				dispatch({ type: 'NOTIFY', payload: { error: err.message } });
@@ -101,7 +106,11 @@ function ProductsManager() {
 		getProductEdit();
 	}, [id]);
 
-	useEffect(() => {}, [enabled]);
+	useEffect(() => {
+		inStock = 0;
+		colors.map(color => color.sizes.map(size => (inStock += size.quantity)));
+		setProduct({ ...product, inStock, colors });
+	}, [colors]);
 
 	const handleChangeInput = e => {
 		const { value, name } = e.target;

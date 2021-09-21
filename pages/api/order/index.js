@@ -19,7 +19,6 @@ export default async (req, res) => {
 
 const createOrder = async (req, res) => {
 	try {
-
 		const { address, phone, cart, total, paymentMethod, fullName, guestOrder } = req.body;
 
 		let result = { id: process.env.GUEST_ID };
@@ -40,7 +39,15 @@ const createOrder = async (req, res) => {
 		});
 
 		cart.filter(item => {
-			return sold(item._id, item.quantity, item.inStock, item.sold);
+			return sold(
+				item._id,
+				item.quantity,
+				item.inStock,
+				item.sold,
+				item.colors,
+				item.selectedColor,
+				item.selectedSize
+			);
 		});
 
 		await newOrder.save();
@@ -51,8 +58,12 @@ const createOrder = async (req, res) => {
 	}
 };
 
-const sold = async (id, quantity, oldInStock, oldSold) => {
-	await Product.findOneAndUpdate({ _id: id }, { inStock: oldInStock - quantity, sold: oldSold + quantity });
+const sold = async (id, quantity, oldInStock, oldSold, oldColors, color, size) => {
+	oldColors[color].sizes[size].quantity -= quantity;
+	await Product.findOneAndUpdate(
+		{ _id: id },
+		{ inStock: oldInStock - quantity, sold: oldSold + quantity, colors: oldColors }
+	);
 };
 
 const getOrders = async (req, res) => {

@@ -433,7 +433,7 @@ export default function Shipping() {
 
 									<div className='text-red-600 min-w-[70px] text-right'>
 										<Currency
-											quantity={item.priceSale}
+											quantity={item.priceSale * item.quantity}
 											currency='VND'
 											pattern='##,### !'
 											group='.'
