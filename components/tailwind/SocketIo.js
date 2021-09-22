@@ -45,8 +45,10 @@ function SocketIo() {
 			chatModalFullEl.classList.remove('hidden', 'animate-scaleUp-1s');
 			chatModalFullEl.classList.add('animate-scale-1s');
 		}
-		const socketInit = io();
-		setSocket(socketInit);
+		fetch('/api/socketio').finally(() => {
+			const socket = io();
+			setSocket(socket);
+		});
 	};
 
 	const sendMsg = message => {

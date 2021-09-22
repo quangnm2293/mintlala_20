@@ -69,7 +69,7 @@ function TopSoldAndNews() {
 
 			{/* Top sale */}
 
-			<div className='my-8 relative'>
+			<div className='my-8 relative min-h-[500px]'>
 				<video muted loop playsInline autoPlay className='lg:w-1/2'>
 					<source
 						src='https://www.googleapis.com/drive/v3/files/1k6fQ1eGfT1aweNBY4k8s1eyxge7RkXLo?alt=media&key=AIzaSyAt_sBing57PwACDm70YMIJ95MkcsF4s_E'
@@ -77,12 +77,12 @@ function TopSoldAndNews() {
 					></source>
 				</video>
 
-				<div className='static lg:absolute my-8 lg:my-0 lg:w-[1000px] h-[75%] overflow-x-auto scrollbar-hide right-0 bottom-[15%] flex'>
+				<div className='static lg:absolute my-8 lg:my-0 lg:max-w-[66%] overflow-x-auto scrollbar-hide left-1/3 top-[5%] flex'>
 					{productsSale.map(product => (
 						<div
 							key={product._id}
 							className='relative flex flex-col md:m-2 bg-white z-30 p-5 pt-10 cursor-pointer shadow-md 
-                                          transition duration-300 transform hover:-translate-y-2 hover:shadow-lg min-w-[250px]'
+                                          transition duration-300 transform hover:-translate-y-2 hover:shadow-lg min-w-[250px] min-h-[380px]'
 						>
 							<p className='absolute top-2 right-2 capitalize text-xs text-gray-400 italic'>
 								{product.category}
