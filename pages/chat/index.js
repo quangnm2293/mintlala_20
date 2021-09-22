@@ -31,7 +31,7 @@ function ChatManager() {
 	}, [socket]);
 
 	useEffect(() => {
-		const socket = io(`${process.env.base_url}`);
+		const socket = io('ws://mintlala-2-0-next-tailwindcss.vercel.app/chat');
 		setSocket(socket);
 		if (user) socket.emit('addUser', user.email);
 	}, [user]);
