@@ -31,10 +31,18 @@ function ChatManager() {
 	}, [socket]);
 
 	useEffect(() => {
-		const socket = io(`${process.env.base_url}`, {
-			rejectUnauthorized: false, // WARN: please do not do this in production
+		fetch('/api/socketio').finally(() => {
+			const socket = io(`${process.env.base_url}`, {
+				reconnectionDelay: 1000,
+				reconnection: true,
+				reconnectionAttemps: 10,
+				transports: ['websocket'],
+				agent: false,
+				upgrade: false,
+				rejectUnauthorized: false,
+			});
+			setSocket(socket);
 		});
-		setSocket(socket);
 		if (user) socket.emit('addUser', user.email);
 	}, [user]);
 
