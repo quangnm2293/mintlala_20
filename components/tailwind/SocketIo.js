@@ -46,7 +46,9 @@ function SocketIo() {
 			chatModalFullEl.classList.add('animate-scale-1s');
 		}
 		fetch('/api/socketio').finally(() => {
-			const socket = io('ws://mintlala-2-0-next-tailwindcss.vercel.app/');
+			const socket = io(`${process.env.base_url}`, {
+				rejectUnauthorized: false, // WARN: please do not do this in production
+			});
 			setSocket(socket);
 		});
 	};
