@@ -51,7 +51,6 @@ nextApp.prepare().then(() => {
 			});
 
 			const user = getUser(msg.receiverId);
-			console.log({ user1: user });
 			if (user) user.chat.push({ text: msg.text, type: 'you' });
 		});
 

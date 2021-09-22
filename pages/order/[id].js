@@ -204,14 +204,15 @@ function OrderDetail() {
 														{item.colors &&
 															item.colors[
 																item.selectedColor
-															].name}
+															]?.name}
 													</p>
 													,
 													<p>
 														{item.colors &&
-															item.colors[0].sizes[
-																item.selectedSize
-															].name}
+															item.colors[
+																item.selectedColor
+															].sizes[item.selectedSize]
+																?.name}
 													</p>
 												</div>
 											</div>
