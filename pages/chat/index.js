@@ -31,7 +31,7 @@ function ChatManager() {
 	}, [socket]);
 
 	useEffect(() => {
-		const socket = io();
+		const socket = io(`${process.env.base_url}`);
 		setSocket(socket);
 		if (user) socket.emit('addUser', user.email);
 	}, [user]);

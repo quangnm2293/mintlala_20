@@ -46,7 +46,7 @@ function SocketIo() {
 			chatModalFullEl.classList.add('animate-scale-1s');
 		}
 		fetch('/api/socketio').finally(() => {
-			const socket = io();
+			const socket = io(`${process.env.base_url}`);
 			setSocket(socket);
 		});
 	};
