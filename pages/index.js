@@ -47,7 +47,6 @@ export default function Home() {
 
 	useEffect(() => {
 		const socket = io();
-		socket.emit('connect1', 'Hi');
 		setSocket(socket);
 	}, []);
 

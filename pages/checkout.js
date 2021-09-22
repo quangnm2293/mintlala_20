@@ -156,7 +156,7 @@ export default function Checkout() {
 
 				dispatch({ type: 'NOTIFY', payload: {} });
 
-				
+				router.push('/success');
 			});
 	};
 
