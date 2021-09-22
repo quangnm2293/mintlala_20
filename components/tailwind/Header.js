@@ -190,6 +190,12 @@ function Header() {
 									Danh mục
 								</p>
 								<p
+									className='hover:text-yellow-700 transition duration-100 transform hover:scale-110'
+									onClick={() => router.push('/chat')}
+								>
+									Tin nhắn
+								</p>
+								<p
 									className='border-t border-gray-300 pt-4 hover:text-yellow-700 transition duration-100 transform hover:scale-110'
 									onClick={handleLogout}
 								>

@@ -1,13 +1,33 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ChatAlt2Icon, MenuIcon, PaperAirplaneIcon, XIcon } from '@heroicons/react/outline';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../store/GlobalState';
+import { io } from 'socket.io-client';
+import { useRouter } from 'next/dist/client/router';
 
-function SocketIo({ socket }) {
+function SocketIo() {
 	const [chatMsg, setChatMsg] = useState([]);
+	const [socket, setSocket] = useState(null);
+
+	const router = useRouter();
 
 	const { state } = useContext(DataContext);
 	const { user } = state.auth;
+
+	useEffect(() => {
+		if (socket && socket.id) {
+			socket.emit('addUser', user ? user.email : socket.id);
+		}
+	}, [socket && socket.id, user]);
+
+	useEffect(() => {
+		socket?.on('getUsers', msg => {
+			console.log(msg);
+		});
+		socket?.on('getMessage', msg => {
+			display(msg, { div: 'self-start', p: 'other' });
+		});
+	}, [socket]);
 
 	const handleClose = () => {
 		if (process.browser) {
@@ -18,7 +38,6 @@ function SocketIo({ socket }) {
 				chatModalFullEl.classList.add('hidden');
 			}, 300);
 		}
-		socket.disconnect();
 	};
 	const handleOpen = () => {
 		if (process.browser) {
@@ -26,25 +45,36 @@ function SocketIo({ socket }) {
 			chatModalFullEl.classList.remove('hidden', 'animate-scaleUp-1s');
 			chatModalFullEl.classList.add('animate-scale-1s');
 		}
+		const socketInit = io();
+		setSocket(socketInit);
 	};
 
 	const sendMsg = message => {
 		let msg = {
-			user: user ? user.email : socket.id,
-			message,
+			senderId: user ? user.email : socket.id,
+			text: message,
 		};
 		display(msg, { div: 'self-end', p: 'you' });
-		socket.emit('hello', msg);
+		socket.emit('sendMessage', msg);
 	};
 	const handleSendMsg = () => {
+		if (!chatMsg) return;
+
 		sendMsg(chatMsg);
+
+		if (process.browser) {
+			const messageBox = document.getElementById('bodyChat');
+			messageBox.scrollTop = messageBox.scrollHeight;
+		}
 
 		setChatMsg('');
 	};
 
-	if (Object.keys(socket).length > 0) {
-		socket.on('sendToAll', msg => {
-			display(msg, { div: 'self-start', p: 'other' });
+	if (process.browser && chatMsg && router.pathname === '/') {
+		document.addEventListener('keyup', e => {
+			if (e.code === 'Enter') {
+				document.getElementById('sendBtn').click();
+			}
 		});
 	}
 
@@ -53,25 +83,28 @@ function SocketIo({ socket }) {
 		const msgDiv = document.createElement('div');
 		msgDiv.classList.add(type.div, 'font-mono', 'flex', 'flex-col', 'space-y-2');
 		let time = new Date().toLocaleTimeString();
-		let innerText = `<p className='self-end'>👻 ${msg.user === 'root@gmail.com' ? 'MINT Lala' : 'User'}</p>
+		let innerTextOther = `<div class='self-end'>MINT Lala</div>
+						<div class='bg-gray-300 rounded-r-xl rounded-tl-lg p-2'>${msg.text}</div>
+						<div class='text-xs text-gray-500 self-end'>${time}</div>`;
 
-                              <p className='${
-						type.p === 'you'
-							? 'bg-blue-50 rounded-l-lg rounded-tr-lg'
-							: 'bg-gray-100 rounded-r-lg rounded-tl-lg'
-					} rounded-lg p-2'>${msg.message}</p>
-
-                              <p className='text-xs text-gray-500 self-end'>${time}</p>`;
-		msgDiv.innerHTML = innerText;
+		let innerTextYou = `<div class='self-end'>
+							👻 ${msg.senderId}
+						</div>
+						<div class='bg-blue-300 rounded-l-xl rounded-tr-xl p-2'>${msg.text}</div>
+						<div class='text-xs text-gray-500 self-end'>${time}</div>`;
+		msgDiv.innerHTML = type.p === 'you' ? innerTextYou : innerTextOther;
 		messageBox.appendChild(msgDiv);
+		messageBox.scrollTop = messageBox.scrollHeight;
 	};
+
+	if (user && user.role === 'admin') return null;
 
 	return (
 		<div className='fixed bottom-4 right-4 z-50 shadow-2xl'>
 			<ChatAlt2Icon className='h-10 cursor-pointer text-green-500' onClick={handleOpen} />
 
 			<div
-				className='fixed bottom-1 right-1 w-72 h-96 lg:w-[375px] lg:h-[500px] bg-gray-100 origin-bottom-right rounded-md overflow-hidden flex flex-col'
+				className='hidden fixed bottom-1 right-1 w-72 h-96 lg:w-[375px] lg:h-[500px] bg-gray-100 origin-bottom-right rounded-md overflow-hidden flex flex-col'
 				id='chatModalFull'
 			>
 				{/* header */}
@@ -84,39 +117,33 @@ function SocketIo({ socket }) {
 
 				{/* body */}
 				<div
-					className='flex-grow w-full bg-white shadow-inner p-3 flex flex-col space-y-2 overflow-y-auto scrollbar-hide'
+					className='flex-grow w-full bg-white shadow-inner p-5 flex flex-col space-y-2 overflow-y-auto scrollbar-hide'
 					id='bodyChat'
 				>
-					<div className='font-mono flex flex-col space-y-2'>
-						{/* <p>👮 {chatMsg1.user}</p>
+					{/* <div className='font-mono flex flex-col space-y-2'>
+						<p>👮 {chatMsg1.user}</p>
 
 						<p className='bg-gray-100 rounded-lg p-2'>{chatMsg1.message}</p>
 
-						<p className='text-xs text-gray-500'>{}</p> */}
+						<p className='text-xs text-gray-500'>{}</p>
 					</div>
 
-					<div className='self-end font-mono flex flex-col space-y-2'>
-						{/* <p className='self-end'>👻 {chatMsg2.user}</p>
-
-						<p className='bg-blue-100 rounded-lg p-2'>{chatMsg2.message}</p>
-
-						<p className='text-xs text-gray-500 self-end'>18:52 Sept 21</p> */}
-					</div>
+					<div className='self-end font-mono flex flex-col space-y-2'></div> */}
 				</div>
 				{/* chat */}
 				<div className=' bg-gray-100 flex items-center justify-center p-2'>
 					<input
 						type='text'
+						id='inputChat'
 						className='p-2 py-5 border border-gray-300 rounded-md flex-grow focus:ring-2 ring-blue-400 focus:outline-none'
 						placeholder='Viết gì đó...'
 						onChange={e => setChatMsg(e.target.value)}
 						value={chatMsg}
 					/>
 
-					<PaperAirplaneIcon
-						className='h-6 rotate-90 px-2 cursor-pointer text-gray-500'
-						onClick={handleSendMsg}
-					/>
+					<div onClick={handleSendMsg} id='sendBtn'>
+						<PaperAirplaneIcon className='h-6 rotate-90 px-2 cursor-pointer text-gray-500' />
+					</div>
 				</div>
 			</div>
 		</div>

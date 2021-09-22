@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
 		root: { type: Boolean, default: false },
 		avatar: { type: String, default: '/images/avatardefault.png' },
 		type: { type: String, default: 'regiter' },
+		messages: { type: Array, default: [] },
 	},
 	{
 		timestamps: true,

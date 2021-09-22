@@ -131,12 +131,21 @@ const UserProfile = () => {
 								<ViewListIcon className='h-7' />
 								<p className=''>Quản lý danh mục</p>
 							</div>
+
 							<div
 								className='flex items-center space-x-2 p-3 rounded-md cursor-pointer'
 								onClick={() => router.push('/users')}
 							>
 								<UsersIcon className='h-7' />
 								<p className=''>Quản lý Users</p>
+							</div>
+
+							<div
+								className='flex items-center space-x-2 p-3 rounded-md cursor-pointer'
+								onClick={() => router.push('/chat')}
+							>
+								<UsersIcon className='h-7' />
+								<p className=''>Quản lý tin nhắn</p>
 							</div>
 						</div>
 					)}
