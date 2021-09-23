@@ -16,6 +16,7 @@ export default function Signin() {
 
 	const [user, setUser] = useState(initialState);
 	const { email, password } = user;
+	const [show, setShow] = useState('password');
 
 	const { state, dispatch } = useContext(DataContext);
 	const { notify } = state;
@@ -92,18 +93,24 @@ export default function Signin() {
 					/>
 				</div>
 
-				<div className='flex flex-col'>
+				<div className='flex flex-col relative'>
 					<label htmlFor='password' className='text-xs font-bold p-1'>
 						Mật khẩu
 					</label>
 					<input
-						type='password'
+						type={show}
 						className='border p-1 rounded-sm border-gray-300'
 						id='password'
 						name='password'
 						placeholder='Nhập mật khẩu'
 						onChange={handleChangeInput}
 					/>
+					<p
+						className='absolute text-xs bottom-2 right-2 text-gray-500 cursor-pointer'
+						onClick={() => setShow(`${show === 'password' ? 'text' : 'password'}`)}
+					>
+						{show === 'password' ? 'Hiện' : 'Ẩn'}
+					</p>
 				</div>
 
 				<div className='text-center my-2'>

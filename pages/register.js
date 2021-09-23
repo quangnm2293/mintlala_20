@@ -12,6 +12,8 @@ export default function Register() {
 	const initialState = { name: '', email: '', password: '', confirmPassword: '' };
 	const [user, setUser] = useState(initialState);
 	const { name, email, password, confirmPassword } = user;
+	const [show, setShow] = useState('password');
+	const [showCfg, setShowCfg] = useState('password');
 
 	const { state, dispatch } = useContext(DataContext);
 	const { auth } = state;
@@ -88,12 +90,12 @@ export default function Register() {
 						onChange={handleChangeInput}
 					/>
 				</div>
-				<div className='flex flex-col'>
+				<div className='flex flex-col relative'>
 					<label className='text-xs font-bold p-1 mt-2' htmlFor='password'>
 						Mật khẩu
 					</label>
 					<input
-						type='password'
+						type={show}
 						className='border p-1 rounded-sm border-gray-300'
 						id='password'
 						name='password'
@@ -101,13 +103,20 @@ export default function Register() {
 						placeholder='Mật khẩu ít nhất 6 ký tự'
 						onChange={handleChangeInput}
 					/>
+
+					<p
+						className='absolute text-xs bottom-2 right-2 text-gray-500 cursor-pointer'
+						onClick={() => setShow(`${show === 'password' ? 'text' : 'password'}`)}
+					>
+						{show === 'password' ? 'Hiện' : 'Ẩn'}
+					</p>
 				</div>
-				<div className='flex flex-col'>
+				<div className='flex flex-col relative'>
 					<label className='text-xs font-bold p-1 mt-2' htmlFor='confirmPassword'>
-						Nhập lại khẩu
+						Nhập lại mật khẩu
 					</label>
 					<input
-						type='password'
+						type={showCfg}
 						className='border p-1 rounded-sm border-gray-300'
 						id='confirmPassword'
 						name='confirmPassword'
@@ -115,6 +124,13 @@ export default function Register() {
 						placeholder='Nhập lại mật khẩu'
 						onChange={handleChangeInput}
 					/>
+
+					<p
+						className='absolute text-xs bottom-2 right-2 text-gray-500 cursor-pointer'
+						onClick={() => setShowCfg(`${showCfg === 'password' ? 'text' : 'password'}`)}
+					>
+						{showCfg === 'password' ? 'Hiện' : 'Ẩn'}
+					</p>
 				</div>
 				<div className='text-center p-2'>
 					<small>

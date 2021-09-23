@@ -41,8 +41,8 @@ const resetPassword = async (req, res) => {
 		const user = await User.findOne({ email: account });
 		if (!user) return res.json({ err: 'Email không tồn tại.' });
 
-		// if (user.type === 'login')
-		// 	return res.json({ err: 'Đăng nhập bàng Google, Facebook không dùng được chức năng này.' });
+		if (user.type === 'login')
+			return res.json({ err: 'Đăng nhập bàng Google, Facebook không dùng được chức năng này.' });
 
 		const access_token = createActiveToken({ id: user._id });
 
