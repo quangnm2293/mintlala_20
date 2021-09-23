@@ -11,8 +11,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import TopSoldAndNews from '../components/tailwind/TopSoldAndNews';
-// import SocketIo from '../components/tailwind/SocketIo';
-
+import SocketIo from '../components/tailwind/SocketIo';
 
 export default function Home() {
 	const [products, setProducts] = useState([]);
@@ -63,7 +62,7 @@ export default function Home() {
 
 				<TopSoldAndNews />
 
-				{/* <SocketIo /> */}
+				<SocketIo />
 			</main>
 			<Footer />
 		</div>
