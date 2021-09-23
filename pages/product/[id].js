@@ -53,6 +53,9 @@ function ProductDetail() {
 		}
 	};
 	const handleCheckout = () => {
+		if (!controlSize) {
+			return dispatch({ type: 'NOTIFY', payload: { error: 'Vui lòng chọn size!' } });
+		}	
 		if (product.inStock <= 0) {
 			dispatch({ type: 'NOTIFY', payload: { error: 'Xin lỗi sản phẩm tạm hết hàng!' } });
 		} else {

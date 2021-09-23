@@ -53,8 +53,8 @@ function CartItem({ item }) {
 
 				<div className='flex text-xs text-gray-500 capitalize space-x-2'>
 					<p>Phân loại:</p>
-					<p>{item.colors && item.colors[item.selectedColor].name}</p>,
-					<p>{item.colors && item.colors[item.selectedColor].sizes[item.selectedSize].name}</p>
+					<p>{item.colors && item.colors[item.selectedColor]?.name}</p>,
+					<p>{item.colors && item.colors[item.selectedColor].sizes[item.selectedSize]?.name}</p>
 				</div>
 
 				<p className='line-clamp-2 text-xs'>{item.description}</p>

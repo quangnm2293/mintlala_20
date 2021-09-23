@@ -431,11 +431,12 @@ export default function Checkout() {
 
 											<div className='flex text-xs space-x-2 capitalize font-bold text-gray-500'>
 												<p>Phân loại:</p>
-												<p>{item.colors[item.selectedColor].name}</p>,
+												<p>{item.colors[item.selectedColor]?.name}</p>,
 												<p>
 													{
 														item.colors[item.selectedColor]
-															.sizes[item.selectedSize].name
+															.sizes[item.selectedSize]
+															?.name
 													}
 												</p>
 											</div>
