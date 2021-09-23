@@ -38,7 +38,7 @@ const register = async (req, res) => {
 		const active_token = createActiveToken({ newUser });
 
 		if (validateEmail(email)) {
-			sendEmail(email, `${process.env.BASE_URL}active/${active_token}`);
+			sendEmail(email, `${process.env.BASE_URL}active/${active_token}`, 'Xác minh');
 			res.json({
 				status: 'OK',
 				msg: 'Đăng ký thành công, vui lòng kiểm tra email của bạn.',

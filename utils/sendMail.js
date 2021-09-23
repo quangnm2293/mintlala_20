@@ -7,7 +7,7 @@ const CLIENT_SECRET = process.env.MAIL_CLIENT_SECRET;
 const REFRESH_TOKEN = process.env.MAIL_REFRESH_TOKEN;
 const SENDER = process.env.SENDER_EMAIL_ADDRESS;
 
-const sendEmail = async (to, url) => {
+const sendEmail = async (to, url, text) => {
 	const oAuth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, OAUTH_PLAYGROUND);
 	oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
@@ -46,7 +46,7 @@ const sendEmail = async (to, url) => {
 					border-radius: 5px;
 					margin: 10px;
 				"
-				>Nhấp vào để xác minh</a
+				>${text}</a
 			>
 			<p>Nếu vì bất cứ lý do gì mà nút không hoạt động, bạn có thể nhấn vào đường link bên dưới:</p>
 			<div>${url}</div>

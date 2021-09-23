@@ -4,7 +4,6 @@ import Header from '../../components/tailwind/Header';
 import Image from 'next/image';
 import { PaperAirplaneIcon } from '@heroicons/react/outline';
 import { useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { DataContext } from '../../store/GlobalState';
 import { io } from 'socket.io-client';
 
@@ -15,14 +14,11 @@ function ChatManager() {
 	const [receiverId, setReceiverId] = useState('');
 	const [activeUser, setActiveUser] = useState(null);
 
-	const router = useRouter();
-
 	const { state } = useContext(DataContext);
 	const { user } = state.auth;
 
 	useEffect(() => {
 		socket?.on('getUsers', msg => {
-			console.log(msg.users);
 			setUsers(msg.users);
 		});
 		socket?.on('getMessage', msg => {
@@ -32,18 +28,10 @@ function ChatManager() {
 
 	useEffect(() => {
 		fetch('/api/socketio').finally(() => {
-			const socket = io(`${process.env.base_url}`, {
-				reconnectionDelay: 1000,
-				reconnection: true,
-				reconnectionAttemps: 10,
-				transports: ['websocket'],
-				agent: false,
-				upgrade: false,
-				rejectUnauthorized: false,
-			});
+			const socket = io(`${process.env.base_url}`, { transports: ['websocket'] });
 			setSocket(socket);
 		});
-		if (user) socket.emit('addUser', user.email);
+		if (user) socket?.emit('addUser', user.email);
 	}, [user]);
 
 	useEffect(() => {
@@ -66,7 +54,9 @@ function ChatManager() {
 		display(msg, { div: 'self-end', p: 'you' });
 		socket.emit('root', msg);
 	};
-	const handleSendMsg = () => {
+	const handleSendMsg = e => {
+		e.preventDefault();
+
 		if (!chatMsg) return;
 
 		sendMsg(chatMsg);
@@ -79,13 +69,6 @@ function ChatManager() {
 		setChatMsg('');
 	};
 
-	if (process.browser && chatMsg && router.pathname === '/chat') {
-		document.addEventListener('keyup', e => {
-			if (e.code === 'Enter') {
-				document.getElementById('sendBtn').click();
-			}
-		});
-	}
 	const display = (msg, type) => {
 		const messageBox = document.getElementById('bodyChatAdmin');
 		const msgDiv = document.createElement('div');
@@ -147,7 +130,10 @@ function ChatManager() {
 						{/* conversation here */}
 					</div>
 
-					<div className='flex items-center border-t border-b border-r border-gray-300'>
+					<form
+						className='flex items-center border-t border-b border-r border-gray-300'
+						onSubmit={handleSendMsg}
+					>
 						<input
 							type='text'
 							placeholder='Viết gì đó...'
@@ -155,10 +141,10 @@ function ChatManager() {
 							onChange={e => setChatMsg(e.target.value)}
 							value={chatMsg}
 						/>
-						<div id='sendBtn' onClick={handleSendMsg}>
+						<button type='submit'>
 							<PaperAirplaneIcon className='h-7 text-gray-500 px-5 rotate-90 cursor-pointer' />
-						</div>
-					</div>
+						</button>
+					</form>
 				</div>
 			</main>
 		</div>

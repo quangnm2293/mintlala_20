@@ -17,14 +17,6 @@ function Header() {
 
 	const [search, setSearch] = useState('');
 
-	// if (process.browser) {
-	// 	document.addEventListener('keyup', e => {
-	// 		if (e.code === 'Enter' && router.pathname === '/') {
-	// 			document.getElementById('searchBtn') && document.getElementById('searchBtn').click();
-	// 		}
-	// 	});
-	// }
-
 	const handleLogout = () => {
 		Cookies.remove('refreshtoken', { path: '/api/auth/accessToken' });
 		Cookies.remove('userInfoInit');
@@ -92,18 +84,21 @@ function Header() {
 					/>
 				</div>
 				{/* Search */}
-				<div className='absolute top-[58%] left-3 right-3 sm:static flex items-center h-10 rounded-md flex-grow bg-yellow-400 hover:bg-yellow-500 cursor-pointer'>
+				<form
+					className='absolute top-[58%] left-3 right-3 sm:static flex items-center h-10 rounded-md flex-grow bg-yellow-400 hover:bg-yellow-500 cursor-pointer'
+					onSubmit={handleSearch}
+				>
 					<input
 						className='p-2 h-full w-full flex-grow flex-shrink rounded-l-md focus:outline-none'
 						type='text'
-						placeholder='Tìm MINT Lala'
+						placeholder='Tìm chân váy...'
 						value={search}
 						onChange={handleChangeSearch}
 					/>
-					<div onClick={handleSearch} id='searchBtn'>
+					<button type='submit'>
 						<SearchIcon className='h-12 p-4 text-black' />
-					</div>
-				</div>
+					</button>
+				</form>
 				{/* Right */}
 				<div className='flex text-gray-300 text-xs md:text-sm space-x-6 mx-5 whitespace-nowrap'>
 					<div className='relative hidden sm:flex space-x-2 items-center cursor-pointer md:hover:outline-while_solid md:p-1 group'>

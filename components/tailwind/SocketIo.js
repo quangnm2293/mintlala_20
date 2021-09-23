@@ -3,13 +3,10 @@ import { ChatAlt2Icon, MenuIcon, PaperAirplaneIcon, XIcon } from '@heroicons/rea
 import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../store/GlobalState';
 import { io } from 'socket.io-client';
-import { useRouter } from 'next/dist/client/router';
 
 function SocketIo() {
 	const [chatMsg, setChatMsg] = useState([]);
 	const [socket, setSocket] = useState(null);
-
-	const router = useRouter();
 
 	const { state } = useContext(DataContext);
 	const { user } = state.auth;
@@ -46,15 +43,7 @@ function SocketIo() {
 			chatModalFullEl.classList.add('animate-scale-1s');
 		}
 		fetch('/api/socketio').finally(() => {
-			const socket = io(`${process.env.base_url}`, {
-				reconnectionDelay: 1000,
-				reconnection: true,
-				reconnectionAttemps: 10,
-				transports: ['websocket'],
-				agent: false,
-				upgrade: false,
-				rejectUnauthorized: false,
-			});
+			const socket = io(`${process.env.base_url}`, { transports: ['websocket'] });
 			setSocket(socket);
 		});
 	};
@@ -67,7 +56,9 @@ function SocketIo() {
 		display(msg, { div: 'self-end', p: 'you' });
 		socket.emit('sendMessage', msg);
 	};
-	const handleSendMsg = () => {
+	const handleSendMsg = e => {
+		e.preventDefault();
+
 		if (!chatMsg) return;
 
 		sendMsg(chatMsg);
@@ -79,14 +70,6 @@ function SocketIo() {
 
 		setChatMsg('');
 	};
-
-	if (process.browser && chatMsg && router.pathname === '/') {
-		document.addEventListener('keyup', e => {
-			if (e.code === 'Enter') {
-				document.getElementById('sendBtn').click();
-			}
-		});
-	}
 
 	const display = (msg, type) => {
 		const messageBox = document.getElementById('bodyChat');
@@ -141,7 +124,7 @@ function SocketIo() {
 					<div className='self-end font-mono flex flex-col space-y-2'></div> */}
 				</div>
 				{/* chat */}
-				<div className=' bg-gray-100 flex items-center justify-center p-2'>
+				<form className=' bg-gray-100 flex items-center justify-center p-2' onSubmit={handleSendMsg}>
 					<input
 						type='text'
 						id='inputChat'
@@ -151,10 +134,10 @@ function SocketIo() {
 						value={chatMsg}
 					/>
 
-					<div onClick={handleSendMsg} id='sendBtn'>
+					<button type='submit'>
 						<PaperAirplaneIcon className='h-6 rotate-90 px-2 cursor-pointer text-gray-500' />
-					</div>
-				</div>
+					</button>
+				</form>
 			</div>
 		</div>
 	);
