@@ -94,7 +94,7 @@ function ProductDetail() {
 							</div>
 
 							<div
-								onClick={() => setTab(tab === 0 ? product.images.length - 1 : tab - 1)}
+								onClick={() => setTab(tab === product.images.length - 1 ? 0 : tab + 1)}
 								className='w-10 h-20 bg-rgba absolute right-2 top-[45%] group-hover:flex items-center cursor-pointer hidden'
 							>
 								<ChevronRightIcon className='h-10 text-white font-bold' />
