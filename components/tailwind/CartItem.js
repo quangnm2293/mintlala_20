@@ -39,14 +39,14 @@ function CartItem({ item }) {
 				height={200}
 				width={200}
 				objectFit='contain'
-				onClick={() => router.push(`/product/${item.id}`)}
+				onClick={() => router.push(`/product/${item._id}`)}
 				className='cursor-pointer'
 			/>
 
 			<div className='col-span-4 sm:col-span-3 mx-2 sm:mx-5 flex flex-col space-y-1'>
 				<p
 					className='line-clamp-2 cursor-pointer capitalize'
-					onClick={() => router.push(`/product/${item.id}`)}
+					onClick={() => router.push(`/product/${item._id}`)}
 				>
 					{item.title}
 				</p>
