@@ -211,7 +211,7 @@ function OrderDetail() {
 														{item.colors &&
 															item.colors[
 																item.selectedColor
-															].sizes[item.selectedSize]
+															]?.sizes[item.selectedSize]
 																?.name}
 													</p>
 												</div>

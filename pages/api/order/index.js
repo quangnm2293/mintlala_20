@@ -54,7 +54,6 @@ const createOrder = async (req, res) => {
 const sold = async (id, quantity, oldColors) => {
 	const product = await Product.findById(id);
 	const { inStock, sold } = product;
-	console.log(inStock, quantity);
 
 	await Product.findByIdAndUpdate(id, { inStock: inStock - quantity, sold: sold + quantity, colors: oldColors });
 };

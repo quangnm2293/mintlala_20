@@ -230,6 +230,7 @@ function ProductsManager() {
 		newColors.map(color => {
 			if (color.isActive) {
 				color.sizes = JSON.parse(JSON.stringify(activeSizes));
+				// color.sizes = Array.from(activeSizes);
 			}
 		});
 		setSizes(newData);
