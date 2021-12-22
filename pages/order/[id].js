@@ -70,21 +70,21 @@ function OrderDetail() {
 	if (orderDetail === {}) return null;
 
 	return (
-		<div className='bg-gray-100 min-h-screen'>
+		<div className="bg-gray-100 min-h-screen">
 			<Head>
 				<title>Chi tiết đơn hàng</title>
 			</Head>
 
 			<Header />
 
-			<main className='max-w-screen-2xl mx-auto bg-white p-5'>
-				<button className='button-blue font-bold text-lg w-40' onClick={() => router.back()}>
+			<main className="max-w-screen-2xl mx-auto bg-white p-5">
+				<button className="button-blue font-bold text-lg w-40" onClick={() => router.back()}>
 					&larr; Trở lại
 				</button>
 
-				<div className='my-4 mx-auto'>
-					<div className='flex flex-col space-y-2'>
-						<h2 className='text-xl lg:text-2xl text-gray-600 font-semibold my-5'>
+				<div className="my-4 mx-auto">
+					<div className="flex flex-col space-y-2">
+						<h2 className="text-xl lg:text-2xl text-gray-600 font-semibold my-5">
 							Chi tiết đơn hàng {orderDetail._id ? orderDetail._id.substring(20, 24) : ''}
 						</h2>
 						<p>
@@ -93,9 +93,7 @@ function OrderDetail() {
 						<p>
 							Email:
 							<strong>
-								{orderDetail.user.email === 'miqshop261192@gmail.com'
-									? ' GUEST'
-									: orderDetail.user.email}
+								{!orderDetail.user?.email ? ' GUEST' : orderDetail.user.email}
 							</strong>
 						</p>
 						<p>
@@ -108,7 +106,7 @@ function OrderDetail() {
 						<p>
 							Tổng số tiền cần thanh toán:{' '}
 							<strong>
-								<span className='text-red-700'>
+								<span className="text-red-700">
 									<small>&#x20AB;</small>
 									{orderDetail.delivered
 										? 0
@@ -122,7 +120,7 @@ function OrderDetail() {
 							Phương thức thanh toán:{' '}
 							<strong>
 								{orderDetail.paymentMethod === 'transfer' ? (
-									<span className='text-danger'>
+									<span className="text-danger">
 										Vui lòng chuyển khoản qua stk: 0441000733443 Nguyễn Minh
 										Quang - Vietcombank với nội dung ten_sodienthoai
 									</span>
@@ -154,7 +152,7 @@ function OrderDetail() {
 							: 'Chưa giao hàng'}
 						{auth.user.role === 'admin' && !orderDetail.delivered && (
 							<button
-								className='button-green w-44'
+								className="button-green w-44"
 								onClick={() => handleDelivered(orderDetail._id)}
 							>
 								Đánh dấu đã giao
@@ -162,29 +160,29 @@ function OrderDetail() {
 						)}
 					</div>
 
-					<h3 className='text-gray-600 text-xl lg:text-2xl font-semibold my-4'>
+					<h3 className="text-gray-600 text-xl lg:text-2xl font-semibold my-4">
 						Chi tiết sản phẩm
 					</h3>
 
-					<div className='max-w-[100vw] overflow-x-auto scrollbar-hide'>
-						<table className='table-fixed	'>
+					<div className="max-w-[100vw] overflow-x-auto scrollbar-hide">
+						<table className="table-fixed	">
 							<thead>
-								<tr className='border border-gray-300 divide-x-2 rounded-md'>
-									<th className='p-2'>Sản phẩm</th>
+								<tr className="border border-gray-300 divide-x-2 rounded-md">
+									<th className="p-2">Sản phẩm</th>
 									<th>Số lượng</th>
 									<th>Giá</th>
 								</tr>
 							</thead>
-							<tbody className='divide-y-2'>
+							<tbody className="divide-y-2">
 								{orderDetail.cart.map((item, i) => (
 									<tr key={i}>
-										<td className='flex items-center capitalize space-x-2 min-w-[400px] p-2'>
+										<td className="flex items-center capitalize space-x-2 min-w-[400px] p-2">
 											<Link href={`/product/${item._id}`}>
 												<a>
 													<Image
-														className='rounded-md'
+														className="rounded-md"
 														src={item.images[0].url}
-														alt='sản phẩm'
+														alt="sản phẩm"
 														width={100}
 														height={100}
 													></Image>
@@ -193,12 +191,12 @@ function OrderDetail() {
 
 											<div>
 												<Link href={`/product/${item._id}`}>
-													<a className='line-clamp-1 lg:line-clamp-2'>
+													<a className="line-clamp-1 lg:line-clamp-2">
 														{item.title}
 													</a>
 												</Link>
 
-												<div className='flex text-xs text-gray-500 capitalize space-x-2'>
+												<div className="flex text-xs text-gray-500 capitalize space-x-2">
 													<p>Phân loại:</p>
 													<p>
 														{item.colors &&
@@ -217,10 +215,10 @@ function OrderDetail() {
 												</div>
 											</div>
 										</td>
-										<td className='min-w-[120px] text-center'>
+										<td className="min-w-[120px] text-center">
 											{item.quantity}
 										</td>
-										<td className='min-w-[120px] text-center text-red-600'>
+										<td className="min-w-[120px] text-center text-red-600">
 											<small>&#x20AB; </small>
 											{displayPrice(item.priceSale * item.quantity)}
 										</td>
