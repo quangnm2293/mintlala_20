@@ -62,6 +62,8 @@ export default function Home() {
 
 			<MessageSocial />
 
+			<h1>MINT LALA</h1>
+
 			<div className="">
 				<Banner />
 			</div>
