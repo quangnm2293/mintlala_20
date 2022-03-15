@@ -13,6 +13,7 @@ import axios from 'axios';
 import TopSoldAndNews from '../components/tailwind/TopSoldAndNews';
 // import SocketIo from '../components/tailwind/SocketIo';
 
+import ReactGA from 'react-ga';
 
 export default function Home() {
 	const [products, setProducts] = useState([]);
@@ -23,6 +24,14 @@ export default function Home() {
 	const sort = router.query.sort || '';
 	const search = router.query.search || 'all';
 	const limit = router.query.limit || 20;
+
+	useEffect(() => {
+		const initGa = () => {
+			ReactGA.initialize('G-H4P8QWHBRH');
+			ReactGA.pageview(window.location.pathname + window.location.search);
+		};
+		initGa();
+	}, []);
 
 	useEffect(() => {
 		const getProducts = async () => {
@@ -53,10 +62,12 @@ export default function Home() {
 
 			<MessageSocial />
 
-			<div className=''>
+			<h1>MINT LALA</h1>
+
+			<div className="">
 				<Banner />
 			</div>
-			<main className='max-w-screen-2xl mx-auto'>
+			<main className="max-w-screen-2xl mx-auto">
 				<Commitment />
 
 				<CategoryShow products={products} />
