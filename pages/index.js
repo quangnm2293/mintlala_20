@@ -60,7 +60,7 @@ export default function Home() {
 
 			<MessageSocial />
 
-			<h1>MINT LALA</h1>
+			<h1>MINT LALA2</h1>
 
 			<div className="">
 				<Banner />
