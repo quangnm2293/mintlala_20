@@ -15,6 +15,8 @@ import TopSoldAndNews from '../components/tailwind/TopSoldAndNews';
 
 import ReactGA from 'react-ga';
 
+ReactGA.initialize('G-H4P8QWHBRH');
+
 export default function Home() {
 	const [products, setProducts] = useState([]);
 	const router = useRouter();
@@ -26,12 +28,8 @@ export default function Home() {
 	const limit = router.query.limit || 20;
 
 	useEffect(() => {
-		const initGa = () => {
-			ReactGA.initialize('G-H4P8QWHBRH');
-			ReactGA.pageview(window.location.pathname + window.location.search);
-		};
-		initGa();
-	}, []);
+		ReactGA.pageview(window.location.pathname + window.location.search);
+	});
 
 	useEffect(() => {
 		const getProducts = async () => {
